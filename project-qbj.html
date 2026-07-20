@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>情报姬作品集 - 订阅号消息</title>
+    <style>
+        /* ================= 微信订阅号消息列表 (暗黑重构版) ================= */
+        body {
+            background-color: #0d0d0d;
+            color: #f5f5f5;
+            font-family: -apple-system, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 680px; /* 完美契合截图中的订阅号列表宽度 */
+            margin: 0 auto;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #888;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .back-btn:hover {
+            color: #00ffcc;
+        }
+        
+        .page-header {
+            margin-bottom: 40px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 20px;
+        }
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: normal;
+        }
+        .page-header p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        /* 微信订阅号消息卡片列表 */
+        .wx-feed-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px; /* 拉开卡片之间的间距 */
+        }
+        
+        /* 统一卡片容器：将推文和行文逻辑框融为一体 */
+        .feed-item-wrapper {
+            background-color: #161616;
+            border: 1px solid #222;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.25s ease;
+        }
+        .feed-item-wrapper:hover {
+            border-color: #00ffcc;
+            transform: translateY(-2px);
+        }
+
+        .wx-feed-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: transparent;
+            padding: 20px;
+            text-decoration: none;
+            color: inherit;
+            transition: background-color 0.2s;
+        }
+        .feed-item-wrapper:hover .wx-feed-card {
+            background-color: #1d1d1d; /* 悬停时仅推文部分微亮 */
+        }
+        
+        /* 左侧内容区 */
+        .wx-feed-left {
+            flex: 1;
+            margin-right: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 80px; /* 与右侧图高度对齐 */
+        }
+        .wx-feed-header {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        .wx-avatar {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 8px;
+            background-color: #333;
+            display: inline-block;
+        }
+        .wx-tag-name {
+            font-weight: 500;
+            color: #88ffeb; /* 标签分类采用青色，更醒目 */
+        }
+        .wx-feed-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #f5f5f5;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+        .wx-feed-subtext {
+            font-size: 0.8rem;
+            color: #888; /* 亮白色突出阅读量指标 */
+            font-weight: 500;
+        }
+
+        /* 右侧封面图区 */
+        .wx-feed-right {
+            width: 140px;
+            height: 80px;
+            border-radius: 6px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background-color: #222;
+        }
+        .wx-feed-right img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 行文逻辑拆解框（极简高质感设计） */
+        .logic-box {
+            background-color: #111;
+            border-top: 1px solid #222;
+            padding: 15px 20px;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        .logic-title {
+            color: #00ffcc;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .logic-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .logic-list li {
+            margin-bottom: 6px;
+            position: relative;
+            padding-left: 12px;
+            line-height: 1.5;
+        }
+        .logic-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #00ffcc;
+        }
+        .logic-list li:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="index.html" class="back-btn">← 返回作品集主页</a>
+
+        <div class="page-header">
+            <h1>情报姬 / 深度内容运营</h1>
+            <p>点击下方微信卡片，可直接跳转阅读公众号推文原文</p>
+        </div>
+
+        <div class="wx-feed-list">
+
+            <!-- 卡片 1：调侃类 -->
+            <div class="feed-item-wrapper">
+                <a href="https://mp.weixin.qq.com/s/JLhJOXNGe73gJL-RN2pupw" target="_blank" class="wx-feed-card">
+                    <div class="wx-feed-left">
+                        <div class="wx-feed-header">
+                            <div class="wx-avatar" style="background-color: #ff5e57;"></div>
+                            <span class="wx-tag-name">调侃类</span>
+                        </div>
+                        <h3 class="wx-feed-title">四十岁大叔也可以穿女装？</h3>
+                        <div class="wx-feed-subtext">综合阅读量：10w+</div>
+                    </div>
+                    <div class="wx-feed-right">
+                        <img src="image/entertainment.png" alt="封面图">
+                    </div>
+                </a>
+                <!-- 行文逻辑分析框 -->
+                <div class="logic-box">
+                    <div class="logic-title">💡 行文逻辑拆解</div>
+                    <ul class="logic-list">
+                        <li><strong>痛点聚焦</strong>：提取社会反差性现象（中年、男性漫画家、女装宣传）作为强吸睛钩子，打破常规安利文的平淡感。</li>
+                        <li><strong>趣味重构</strong>：将客观上的“请不起模特”趣味转译为“七宗罪”进行幽默声讨，利用反向调侃，让软推广文充满极强的互动吐槽欲。</li>
+                        <li><strong>情感共鸣</strong>：篇尾升华，探讨“四十多岁没有被生活重担压垮、依旧能玩出这么多花样”的坚韧状态，激发读者真诚的共鸣与崇敬。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 卡片 2：资讯类 -->
+            <div class="feed-item-wrapper">
+                <a href="https://mp.weixin.qq.com/s/TWzBcY6ygt_KTHU_r5nL9A" target="_blank" class="wx-feed-card">
+                    <div class="wx-feed-left">
+                        <div class="wx-feed-header">
+                            <div class="wx-avatar" style="background-color: #0be881;"></div>
+                            <span class="wx-tag-name">资讯类</span>
+                        </div>
+                        <h3 class="wx-feed-title">来康康霓虹手游氪金榜</h3>
+                        <div class="wx-feed-subtext">次条阅读量：4w</div>
+                    </div>
+                    <div class="wx-feed-right">
+                        <img src="image/Information.png" alt="封面图">
+                    </div>
+                </a>
+                <!-- 行文逻辑分析框 -->
+                <div class="logic-box">
+                    <div class="logic-title">💡 行文逻辑拆解</div>
+                    <ul class="logic-list">
+                        <li><strong>客观数据引路</strong>：开篇引入 Sensor Tower 二季度权威数据，立足宏观大盘，快速建立行业专业度与严谨感。</li>
+                        <li><strong>爆款数据归因</strong>：针对《赛马娘》季度暴涨 129% 的神级数据及《FGO》大促节点进行深度解构，探讨“IP心智模型+高质量建模”对陈旧游戏机制的降维打击。</li>
+                        <li><strong>国产出海启示</strong>：横向对比国产手游（如明日方舟、原神）在日本市场的浮动，指出深耕内容与本土化人设对延长生命周期的必要性。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 卡片 3：短讯类 -->
+            <div class="feed-item-wrapper">
+                <a href="https://mp.weixin.qq.com/s/xB-DtKns42hC3IFZVY6kow" target="_blank" class="wx-feed-card">
+                    <div class="wx-feed-left">
+                        <div class="wx-feed-header">
+                            <div class="wx-avatar" style="background-color: #ffa502;"></div>
+                            <span class="wx-tag-name">短讯类</span>
+                        </div>
+                        <h3 class="wx-feed-title">【短讯】《JOJO石之海》动画化丨假面骑士50周年纪念企划丨华为电竞显示器曝光</h3>
+                        <div class="wx-feed-subtext">次条阅读量：2w</div>
+                    </div>
+                    <div class="wx-feed-right">
+                        <img src="image/news.png" alt="封面图">
+                    </div>
+                </a>
+                <!-- 行文逻辑分析框（针对短讯进行了精简的“新闻三要素”高效率解构） -->
+                <div class="logic-box">
+                    <div class="logic-title">💡 行文逻辑拆解 (新闻三要素)</div>
+                    <ul class="logic-list">
+                        <li><strong>极速时效性（时间、地点、事件）</strong>：针对碎片化资讯时代，不堆砌废话。用极简、模块化的快讯形式在第一时间完成对三个垂类热点核心事实的精确交付。</li>
+                        <li><strong>互动向吐槽尾声</strong>：每段快讯尾端均留出富有个性、吐槽向的“情报姬短评”及配套表情包，活跃内容氛围，最大化提升文章底部读者评论区的盖楼率。</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

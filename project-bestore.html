@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>良品铺子 · 节日营销物料与视觉重构</title>
+    <style>
+        /* ================= 基础重置与暗黑主题 ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #0d0d0d;
+            color: #f5f5f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #888;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .back-btn:hover {
+            color: #00ffcc;
+        }
+
+        /* ================= 头部设计 ================= */
+        .header {
+            border-bottom: 2px solid #222;
+            padding-bottom: 1.5rem;
+            margin-bottom: 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+        .header h1 span { color: #00ffcc; }
+        .header .sub-badge {
+            font-size: 0.85rem;
+            background: #161616;
+            border: 1px solid #333;
+            color: #00ffcc;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+
+        /* ================= 核心双栏网格 (卡片堆 vs 深度拆解) ================= */
+        .showcase-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 1.3fr;
+            gap: 50px;
+            align-items: flex-start;
+            margin-bottom: 80px; /* 板块之间拉开间距 */
+            border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 60px;
+        }
+        .showcase-layout:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 40px;
+        }
+        @media (max-width: 900px) {
+            .showcase-layout {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        /* 左栏：3D 物理层叠卡片堆 */
+        .deck-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .card-deck {
+            position: relative;
+            width: 360px;
+            height: 480px;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 450px) {
+            .card-deck {
+                width: 290px;
+                height: 387px;
+            }
+        }
+        
+        /* 单张卡片基本样式 */
+        .card-item {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #161616;
+            border: 1px solid #222;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), 
+                        opacity 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+                        z-index 0.4s;
+        }
+        .card-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        /* 底部极简控制器 */
+        .deck-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .control-btn {
+            background: none;
+            border: 1px solid #333;
+            color: #888;
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .control-btn:hover {
+            border-color: #00ffcc;
+            color: #00ffcc;
+        }
+
+        /* 右栏：深度拆解面板 */
+        .details-panel {
+            background-color: #121212;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 35px;
+            min-height: 480px;
+            display: flex;
+            flex-direction: column;
+        }
+        .detail-title {
+            font-size: 1.4rem;
+            color: #fff;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 15px;
+        }
+        .detail-section {
+            margin-bottom: 25px;
+        }
+        .detail-section:last-child {
+            margin-bottom: 0;
+        }
+        .detail-section h4 {
+            font-size: 0.85rem;
+            color: #00ffcc;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .detail-section p {
+            font-size: 0.95rem;
+            color: #aaa;
+            line-height: 1.6;
+        }
+        /* 微信文案气泡样式 */
+        .detail-copy {
+            background-color: #181818;
+            border: 1px solid #262626;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 0.85rem;
+            color: #ccc;
+            white-space: pre-wrap; /* 完美保留换行与符号格式 */
+        }
+
+        /* 版块小标题 */
+        .part-header {
+            font-size: 1.1rem;
+            color: #888;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 10px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- 返回主页面包屑 -->
+        <a href="index.html" class="back-btn">← 返回作品集主页</a>
+
+        <!-- 头部设计 -->
+        <div class="header">
+            <div>
+                <h1>良品铺子 · <span>节日营销物料与视觉重构</span></h1>
+                <div style="font-size:0.9rem; color:#666; margin-top:0.3rem;">以 17 号会员日及端午节为例 / 探索高转化率的互动与美食设计表达</div>
+            </div>
+            <div class="sub-badge">视觉策划 · 场景转译 · 文本设计</div>
+        </div>
+
+
+        <!-- ================= Part 01 / 17号会员日 · 锦鲤疯狂猜 ================= -->
+        <div class="part-header">Part 01 / 17号会员日 · 锦鲤疯狂猜 H5 互动营销</div>
+        <div class="showcase-layout">
+            
+            <!-- 左栏：层叠卡片堆 -->
+            <div class="deck-container">
+                <div class="card-deck" id="deck-riddle">
+                    <div class="card-item"><img src="image/cmlppz.png" alt="锦鲤疯狂猜-品牌猜猜看"></div>
+                    <div class="card-item"><img src="image/cmlppz2.png" alt="锦鲤疯狂猜-看线索猜品牌"></div>
+                    <div class="card-item"><img src="image/cmlj.png" alt="锦鲤疯狂猜-猜数字挑战"></div>
+                </div>
+                
+                <div class="deck-controls">
+                    <button class="control-btn" id="btn-prev-riddle">← 上一张</button>
+                    <button class="control-btn" id="btn-next-riddle">下一张 →</button>
+                </div>
+            </div>
+
+            <!-- 右栏：随动深度拆解 -->
+            <div class="details-panel">
+                <h3 class="detail-title">载入中...</h3>
+                <div class="detail-section">
+                    <h4>🎯 核心卖点 / Core Selling Point</h4>
+                    <p class="detail-usp">载入中...</p>
+                </div>
+                <div class="detail-section">
+                    <h4>🎨 设计思路 / Visual Concept</h4>
+                    <p class="detail-design">载入中...</p>
+                </div>
+                <div class="detail-section">
+                    <h4>✍️ 文案精选 / Copywriting</h4>
+                    <div class="detail-copy">载入中...</div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- ================= Part 02 / 甄选端午 · 霸气牛肉粽 ================= -->
+        <div class="part-header">Part 02 / 甄选端午 · 霸气牛肉粽工艺与视觉表达</div>
+        <div class="showcase-layout">
+            
+            <!-- 左栏：层叠卡片堆 -->
+            <div class="deck-container">
+                <div class="card-deck" id="deck-beef">
+                    <div class="card-item"><img src="image/lpycl1.jpg" alt="端午包装-工艺封存"></div>
+                    <div class="card-item"><img src="image/lpycl2.jpg" alt="端午包装-大块牛腩"></div>
+                    <div class="card-item"><img src="image/lpycl3.jpg" alt="端午包装-严选食材"></div>
+                    <div class="card-item"><img src="image/lpycl4.jpg" alt="端午包装-真空实拍"></div>
+                </div>
+                
+                <div class="deck-controls">
+                    <button class="control-btn" id="btn-prev-beef">← 上一张</button>
+                    <button class="control-btn" id="btn-next-beef">下一张 →</button>
+                </div>
+            </div>
+
+            <!-- 右栏：随动深度拆解 -->
+            <div class="details-panel">
+                <h3 class="detail-title">载入中...</h3>
+                <div class="detail-section">
+                    <h4>🎯 核心卖点 / Core Selling Point</h4>
+                    <p class="detail-usp">载入中...</p>
+                </div>
+                <div class="detail-section">
+                    <h4>🎨 设计思路 / Visual Concept</h4>
+                    <p class="detail-design">载入中...</p>
+                </div>
+                <div class="detail-section">
+                    <h4>✍️ 文案精选 / Copywriting</h4>
+                    <div class="detail-copy">载入中...</div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- ================= Part 03 / 龙舟造型礼盒 · 节日仪式感 ================= -->
+        <div class="part-header">Part 03 / 龙舟造型礼盒 · 节日仪式感与实拍陈列</div>
+        <div class="showcase-layout">
+            
+            <!-- 左栏：层叠卡片堆 -->
+            <div class="deck-container">
+                <div class="card-deck" id="deck-gift">
+                    <div class="card-item"><img src="image/lppzdw1.png" alt="端午实拍-龙舟造型礼盒"></div>
+                    <div class="card-item"><img src="image/lppzdw2.png" alt="端午实拍-礼盒内容展示"></div>
+                    <div class="card-item"><img src="image/lppzdw3.png" alt="端午实拍-粽子切面拼图"></div>
+                    <div class="card-item"><img src="image/lppzdw4.png" alt="端午实拍-咸鸭蛋特写"></div>
+                </div>
+                
+                <div class="deck-controls">
+                    <button class="control-btn" id="btn-prev-gift">← 上一张</button>
+                    <button class="control-btn" id="btn-next-gift">下一张 →</button>
+                </div>
+            </div>
+
+            <!-- 右栏：随动深度拆解 -->
+            <div class="details-panel">
+                <h3 class="detail-title">载入中...</h3>
+                <div class="detail-section">
+                    <h4>🎯 核心卖点 / Core Selling Point</h4>
+                    <p class="detail-usp">载入中...</p>
+                </div>
+                <div class="detail-section">
+                    <h4>🎨 设计思路 / Visual Concept</h4>
+                    <p class="detail-design">载入中...</p>
+                </div>
+                <div class="detail-section">
+                    <h4>✍️ 文案精选 / Copywriting</h4>
+                    <div class="detail-copy">载入中...</div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= 核心随动交互脚本 ================= -->
+    <script>
+        // ================= 1. 三个板块的数据源 =================
+        
+        // Part 01: 猜谜数据（3套独立活动文案）
+        const riddleData = [
+            {
+                title: "锦鲤疯狂猜 ① / 品牌猜猜看",
+                usp: "利用17号大促利益点，配合趣味填字降低首购门槛。",
+                design: "主打端午清新橘粉色渐变，大号锦鲤插画烘托节日大促氛围。主体采用极简“田字格”展示良品铺子谜底轮廓，降低用户扫码参与的心理壁垒。",
+                copy: `#17号会员日｜锦鲤疯狂猜第①期\n【每月17号是□□□□会员日？】\n  ✅抄答案: 盯「门店招牌」填𝟰字\n  ✅猜中 = 抽𝟴款零食盲盒 ~\n  戳链接立即参与👉d.lppz.com/——`
+            },
+            {
+                title: "锦鲤疯狂猜 ② / 看线索猜品牌",
+                usp: "排摸并纠正私域会员对公司经营范围的认知盲区。",
+                design: "以手绘线描的高颜值实体店面为核心线索图。利用“开个关子”盲盒手绘，烘托“猜中抽盲盒”的互动探索欲。",
+                copy: `#17号会员日｜锦鲤疯狂猜第①期\n🔍看图中线索,猜对𝟰字零食品牌\n🎁抽鲜卤鸭翅根/脆冬枣等盲盒！\n\n🤫偷偷给大家划重点~\n✨本期谜底和「门店招牌」有关\n\n⚠️盲盒数量有限,手快者先得！\n👇戳链接，立即参与抽奖\n d.lppz.com/——`
+            },
+            {
+                title: "锦鲤疯狂猜 ③ / 猜数字挑战",
+                usp: "加深17号会员日的品牌心智，提升大促参与率。",
+                design: "采用 3D 渲染质感强烈的“17”立方体大字作为主视觉中心。突出“最高抽多少礼金”的利益诱惑。",
+                copy: `#17号会员日｜锦鲤疯狂猜第②期\n谜语：𝟭𝟳号折上𝟴𝟴折必逛□□□□？\n谜底：藏在海报图里🔍轻松猜中\n猜中：=解锁𝟴款幸运零食盲盒🎁\n戳链接参与抽奖👉d.lppz.com/——`
+            }
+        ];
+
+        // Part 02: 牛肉粽数据（共用 1 套端午牛肉粽真实文案）
+        const beefData = [
+            {
+                title: "端午肉粽 ❶ / 新鲜工艺封存篇",
+                usp: "突出新鲜美味心智与品质工艺保障。",
+                design: "采用手部包裹粽叶的细节特写，传递纯手作工艺与健康、无添加的信赖感。"
+            },
+            {
+                title: "端午肉粽 ❷ / 大块牛腩切面篇",
+                usp: "展示爆款肉粽细节，利用极强食欲促进大促转化。",
+                design: "拍摄并微距放大牛腩拉丝切面，通过饱满多汁的剖面特写直接刺激感官味蕾。"
+            },
+            {
+                title: "端午肉粽 ❸ / 严选十道工序篇",
+                usp: "提炼10道严选工序，强化真材实料的严选感。",
+                design: "对称排列红豆、糯米、高山箬叶、大块牛肉等原材料，突出视觉上的秩序美感。"
+            },
+            {
+                title: "端午肉粽 ❹ / 真空包装实拍篇",
+                usp: "通过店内真实场景实拍，建立安全和放心感。",
+                design: "以线下真实店面为背景虚化底，手持真空包装肉粽进行展示，体现“所见即所得”的真实感。"
+            }
+        ];
+        const beefSharedCopy = `#肉粽党集合！这粽全是真牛肉！\n抢先看霸气牛肉粽的饱满内涵👀\n🥩未蒸煮就能看到大块牛腩，掰开扑鼻的肉香+粽香！香迷糊了我😋😋\n📍领券再享88折👉d.lppz.com/——`;
+
+        // Part 03: 礼盒数据（共用 1 套端午送礼王炸真实文案）
+        const giftData = [
+            {
+                title: "端午实拍 ❶ / 龙舟造型礼盒篇",
+                usp: "龙舟新奇造型送礼有底蕴，展示108元高性价比大容量心智。",
+                design: "突出礼盒“国潮非遗”底蕴。以烫金工艺的龙舟礼盒实体图作为背景，前景展示内配的绿豆糕、熟咸鸭蛋，传递高级感。"
+            },
+            {
+                title: "端午实拍 ❷ / 礼盒全家福陈列篇",
+                usp: "展现9种美味18袋美食的丰富组合，消除消费者分量顾虑。",
+                design: "经典开箱陈列构图，平铺展示全系列肉粽、咸鸭蛋、绿豆糕和水磨年糕，打消分量顾虑。"
+            },
+            {
+                title: "端午实拍 ❸ / 粽子口味剖面拼图",
+                usp: "咸咸甜甜兼顾，打消对礼盒口味单一的流失点。",
+                design: "四分格特写拼图，展示梅干菜肉粽、板栗鲜肉粽、香甜蜜枣粽和绵绵豆沙粽的真实切面图。"
+            },
+            {
+                title: "端午实拍 ❹ / 咸鸭蛋流油特写篇",
+                usp: "展现双黄出油鸭蛋细节，拉动视觉共鸣与流口水转化率。",
+                design: "微距展示手指掰开咸鸭蛋出油一瞬间的特写，通过温润油亮的反光极大地激发食欲感官。"
+            }
+        ];
+        const giftSharedCopy = `端午送礼王炸💥这款让我封神亲戚圈🤳\n昨天拎去姨妈家，姨妈当场拍照发圈夸赞\n9种美味18袋美食，有甜有咸[得意]\n可戳链接前往附近门店选购\n👉d.lppz.com/——`;
+
+
+        // ================= 2. 影刀级组件化 JS 控制器 =================
+        function createDeckController(deckId, data, sharedCopy = null) {
+            let currentIndex = 0;
+            const deckElement = document.getElementById(deckId);
+            const cards = deckElement.querySelectorAll('.card-item');
+            const totalCards = cards.length;
+            let isAnimating = false;
+
+            // 获取当前卡片堆所属的父版块，并绑定对应的文字更新节点
+            const layoutContainer = deckElement.closest('.showcase-layout');
+            const titleElement = layoutContainer.querySelector('.detail-title');
+            const uspElement = layoutContainer.querySelector('.detail-usp');
+            const designElement = layoutContainer.querySelector('.detail-design');
+            const copyElement = layoutContainer.querySelector('.detail-copy');
+
+            let transitionTimeout;
+
+            // 渲染并重排层叠卡片的位置
+            function updateDeck() {
+                cards.forEach((card, i) => {
+                    let offset = (i - currentIndex + totalCards) % totalCards;
+                    
+                    if (offset === 0) {
+                        // 最上层
+                        card.style.transform = 'translate3d(0, 0, 0) scale(1) rotate(0deg)';
+                        card.style.zIndex = '10';
+                        card.style.opacity = '1';
+                        card.style.pointerEvents = 'auto';
+                    } else if (offset === 1) {
+                        // 第二层
+                        card.style.transform = 'translate3d(15px, 15px, 0) scale(0.95) rotate(-2deg)';
+                        card.style.zIndex = '9';
+                        card.style.opacity = '0.85';
+                        card.style.pointerEvents = 'none';
+                    } else if (offset === 2) {
+                        // 第三层
+                        card.style.transform = 'translate3d(30px, 30px, 0) scale(0.9) rotate(2deg)';
+                        card.style.zIndex = '8';
+                        card.style.opacity = '0.6';
+                        card.style.pointerEvents = 'none';
+                    } else {
+                        // 底层隐藏
+                        card.style.transform = 'translate3d(40px, 40px, 0) scale(0.8) rotate(0deg)';
+                        card.style.zIndex = '1';
+                        card.style.opacity = '0';
+                        card.style.pointerEvents = 'none';
+                    }
+                });
+
+                // 更新右侧文本
+                const currentData = data[currentIndex];
+                titleElement.innerText = currentData.title;
+                uspElement.innerText = currentData.usp;
+                designElement.innerText = currentData.design;
+                
+                // 判断是使用共享文案还是独立文案
+                copyElement.innerText = sharedCopy ? sharedCopy : currentData.copy;
+            }
+
+            // 切换到下一张
+            function nextCard() {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                const topCard = cards[currentIndex];
+                topCard.style.transform = 'translate3d(140%, -40px, 0) scale(1.05) rotate(20deg)';
+                topCard.style.opacity = '0';
+
+                if (transitionTimeout) clearTimeout(transitionTimeout);
+
+                transitionTimeout = setTimeout(() => {
+                    currentIndex = (currentIndex + 1) % totalCards;
+                    updateDeck();
+                    isAnimating = false;
+                }, 350);
+            }
+
+            // 切换到上一张
+            function prevCard() {
+                if (isAnimating) return;
+                currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+                updateDeck();
+            }
+
+            // 为当前卡片组的每个卡片绑定点击事件（点击最上层卡片自动切下一张）
+            cards.forEach(card => {
+                card.addEventListener('click', nextCard);
+            });
+
+            // 初始化
+            updateDeck();
+
+            return { nextCard, prevCard };
+        }
+
+        // ================= 3. 为三个板块分别挂载独立的卡片堆控制器 =================
+        let controllerRiddle, controllerBeef, controllerGift;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            controllerRiddle = createDeckController('deck-riddle', riddleData);
+            controllerBeef = createDeckController('deck-beef', beefData, beefSharedCopy);
+            controllerGift = createDeckController('deck-gift', giftData, giftSharedCopy);
+
+            // 绑定外部极简控制器的按钮点击事件
+            document.getElementById('btn-prev-riddle').addEventListener('click', () => controllerRiddle.prevCard());
+            document.getElementById('btn-next-riddle').addEventListener('click', () => controllerRiddle.nextCard());
+
+            document.getElementById('btn-prev-beef').addEventListener('click', () => controllerBeef.prevCard());
+            document.getElementById('btn-next-beef').addEventListener('click', () => controllerBeef.nextCard());
+
+            document.getElementById('btn-prev-gift').addEventListener('click', () => controllerGift.prevCard());
+            document.getElementById('btn-next-gift').addEventListener('click', () => controllerGift.nextCard());
+        });
+    </script>
+
+</body>
+</html>

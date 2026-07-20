@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>非遗文创短视频变现方案 - 策略与数据看板</title>
+    <!-- 引入 Chart.js 轻量级图表库 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        /* ================= 基础重置与暗黑主题 ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #0d0d0d;
+            color: #f5f5f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #888;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .back-btn:hover {
+            color: #00ffcc;
+        }
+
+        /* ================= 头部设计 ================= */
+        .header {
+            border-bottom: 2px solid #222;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+        .header h1 span { color: #00ffcc; }
+        .header .sub-badge {
+            font-size: 0.85rem;
+            background: #161616;
+            border: 1px solid #333;
+            color: #00ffcc;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            font-weight: 500;
+        }
+
+        /* ================= 上部两栏网格 (Section 01 + Sidebar) ================= */
+        .top-grid {
+            display: grid;
+            grid-template-columns: 2.4fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        @media (max-width: 1000px) {
+            .top-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ================= 下部全宽容器 (让图表和表格占用最大空间) ================= */
+        .full-width-content {
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+            margin-top: 20px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            border-left: 3px solid #00ffcc;
+            padding-left: 12px;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        /* 纯文本卡片样式 */
+        .info-card {
+            background-color: #121212;
+            border: 1px solid #222;
+            padding: 25px;
+            border-radius: 12px;
+        }
+        .info-card p {
+            font-size: 0.95rem;
+            color: #aaa;
+            margin-bottom: 15px;
+        }
+        .info-card p:last-child {
+            margin-bottom: 0;
+        }
+        .info-card p strong {
+            color: #fff;
+        }
+
+        /* 关键数据摘要 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            background: #121212;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #222;
+            margin-bottom: 40px;
+        }
+        .stats-grid .item { text-align: center; }
+        .stats-grid .num { font-size: 1.8rem; font-weight: 700; color: #00ffcc; }
+        .stats-grid .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #666; margin-top: 4px; }
+
+        /* 图表网格（全宽下，两个并排十分舒展） */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        @media (max-width: 900px) {
+            .chart-grid { grid-template-columns: 1fr; }
+        }
+        .chart-card {
+            background: #121212;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #222;
+            transition: transform 0.2s;
+        }
+        .chart-card:hover { transform: translateY(-2px); }
+        .chart-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: #fff;
+        }
+        .chart-card .desc {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 1.2rem;
+        }
+        .chart-container { position: relative; height: 240px; width: 100%; }
+
+        /* 内容模型展示 */
+        .model-flow {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .model-step {
+            background: #161616;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #222;
+            border-bottom: 3px solid #00ffcc;
+            flex: 1;
+            min-width: 250px;
+        }
+        .model-step h4 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        .model-step h4 span { color: #00ffcc; }
+        .model-step p {
+            font-size: 0.85rem;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        /* 宽版自适应数据表格 */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            background: #121212;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            min-width: 800px; /* 保证在小屏上出现横向滚动而不挤压 */
+        }
+        .data-table th { text-align: left; padding: 12px 10px; border-bottom: 2px solid #222; color: #888; font-weight: 600; }
+        .data-table td { padding: 15px 10px; border-bottom: 1px solid #1c1c1c; color: #ccc; vertical-align: top; line-height: 1.5; }
+        .badge { background: #1f1f1f; color: #00ffcc; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; border: 1px solid #333; font-weight: bold; }
+        
+        /* 列表式步骤设计 */
+        .step-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .step-list li {
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        .step-list li strong {
+            color: #fff;
+        }
+
+        /* ================= 右侧：侧边栏（极其克制） ================= */
+        .sidebar {
+            border-left: 1px solid #222;
+            padding-left: 30px;
+        }
+        @media (max-width: 1000px) {
+            .sidebar {
+                border-left: none;
+                padding-left: 0;
+                border-top: 1px solid #222;
+                padding-top: 30px;
+            }
+        }
+        .sidebar-title {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .side-wx-card {
+            display: block;
+            background-color: #121212;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 12px;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 15px;
+            transition: all 0.25s ease;
+        }
+        .side-wx-card:hover {
+            border-color: #00ffcc;
+            background-color: #1a1a1a;
+        }
+        .side-wx-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #dfdfdf;
+            line-height: 1.4;
+            margin-bottom: 6px;
+        }
+        .side-wx-meta {
+            font-size: 0.75rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <!-- 返回主页 -->
+    <a href="index.html" class="back-btn">← 返回作品集主页</a>
+
+    <!-- 顶部标题 -->
+    <div class="header">
+        <div>
+            <h1>非遗<span>唐卡文创</span> · 短视频冷启动策略</h1>
+            <div style="font-size:0.9rem; color:#666; margin-top:0.3rem;">基于 <strong>抖音 · 快手 · 微信视频号</strong> 15 个头部账号 · 7000+ 条数据清洗</div>
+        </div>
+        <div class="sub-badge">低成本 · 模块化 · 可复用</div>
+    </div>
+
+    <!-- ================= 1. 上部两栏排版（核心痛点 + 顺带写的推文） ================= -->
+    <div class="top-grid">
+        
+        <!-- 左侧：痛点与降维破局 -->
+        <main>
+            <h2 class="section-title">01 / 核心痛点与降维破局</h2>
+            <div class="info-card">
+                <p><strong>调研验证的底层痛点：</strong>单纯依靠视觉工艺展示（如“匠人集”）或纯背景知识科普（如“艺术有毒”）的账号，生命周期极少能跨越 2 年，且变现效率极低。其底层逻辑阻碍在于：<strong>高审美门槛与下沉消费市场认知之间的严重断层。</strong></p>
+                <p><strong>降维破局策略：</strong>必须将原本偏向学术与宗教的艺术符号，向<strong>“匠心/祈福/人情味”</strong>等更具普适性的生活场景进行“降维转译”。数据表明，融入人情叙事或祈福象征的视频，在完播率上能高出纯艺术展示类 <strong>40%</strong>，同时带来极强的评论区粘性与成交信任度。</p>
+            </div>
+        </main>
+        
+        <!-- 右侧：侧边栏（展示顺带写的推文） -->
+        <aside class="sidebar">
+            <h3 class="sidebar-title">相关阅读 / 顺带撰写的推文</h3>
+            
+            <!-- 卡片 1 -->
+            <a href="https://mp.weixin.qq.com/s/aZ2hs4aEPBCT6WbqFPYr7g" target="_blank" class="side-wx-card">
+                <h4 class="side-wx-title">“唐卡植物”系列徽章设计</h4>
+                <div class="side-wx-meta">
+                </div>
+            </a>
+
+            <!-- 卡片 2 -->
+            <a href="https://mp.weixin.qq.com/s/LS5FdilT-VrT_d1U9wBZqQ" target="_blank" class="side-wx-card">
+                <h4 class="side-wx-title">山水之间，一心同源</h4>
+                <div class="side-wx-meta">
+                </div>
+            </a>
+        </aside>
+
+    </div>
+
+    <!-- ================= 2. 下部全宽排版（让图表、模型和表格完全舒展，冲击力强） ================= -->
+    <div class="full-width-content">
+        
+        <!-- 核心数据一览 -->
+        <div class="stats-grid">
+            <div class="item"><div class="num">15 个</div><div class="label">头部账号拆解</div></div>
+            <div class="item"><div class="num">3大平台</div><div class="label">抖音 · 快手 · 微信视频号</div></div>
+            <div class="item"><div class="num">7000+</div><div class="label">视频数据清洗总量</div></div>
+        </div>
+
+        <!-- 模块化内容模型 -->
+        <div>
+            <h2 class="section-title">02 / 统一内容模型：可复用的“60秒模块化公式”</h2>
+            <div class="info-card" style="margin-bottom: 20px;">
+                <p>为解决人员与预算限制，我们锚定 <strong>60-90秒</strong> 为标准时长，将视频拆解为可任意替换素材的 A/B/C 三个功能模块：</p>
+            </div>
+            
+            <div class="model-flow">
+                <div class="model-step">
+                    <h4><span>0-5s</span> 模块A：黄金开头</h4>
+                    <p>极具张力的工艺微距瞬间。如颜料爆开、金线勾画特写，通过强视觉冲突确保公域的前 5 秒完播率。</p>
+                </div>
+                <div class="model-step">
+                    <h4><span>5-50s</span> 模块B：过程展示与IP信任</h4>
+                    <p>微距工艺ASMR细节，<strong>同时在运镜中带入匠人极度专注的神态与动作</strong>。在无声中向观众渗透“一生只做一件事”的专业手艺人IP形象，建立底层信赖。</p>
+                </div>
+                <div class="model-step">
+                    <h4><span>50-60s</span> 模块C：价值锚点</h4>
+                    <p><strong>避开枯燥的制作工时（移至B作为细节）</strong>。聚焦于：<strong>情感共鸣</strong>（礼赠/祈福温度）、<strong>适用场景</strong>（案头静心/高端陈设）、<strong>物品意义</strong>（非遗文化的精神寄托与唯一性）。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 交互式数据看板 -->
+        <div>
+            <h2 class="section-title">03 / 跨平台数据解构与效能验证（交互看板）</h2>
+            <div class="chart-grid">
+                <!-- 图1: 平台画像 -->
+                <div class="chart-card">
+                    <h3>📊 抖音 / 快手 / 视频号 受众画像对比</h3>
+                    <div class="desc">指导封面与标题策略的侧重点（数据归一化）</div>
+                    <div class="chart-container"><canvas id="chart1"></canvas></div>
+                </div>
+                <!-- 图2: 内容模块效能 -->
+                <div class="chart-card">
+                    <h3>🎯 模块A / B / C 效能验证</h3>
+                    <div class="desc">验证三模块在留存、IP信任、价值共鸣上的效能分配</div>
+                    <div class="chart-container"><canvas id="chart2"></canvas></div>
+                </div>
+                <!-- 图3: 生命周期 -->
+                <div class="chart-card">
+                    <h3>📉 垂直文化账号平均生命周期趋势</h3>
+                    <div class="desc">同质化科普或无IP人设账号，极易在 1.5 - 2 年进入衰退拐点</div>
+                    <div class="chart-container"><canvas id="chart3"></canvas></div>
+                </div>
+                <!-- 图4: 漏斗路径 -->
+                <div class="chart-card">
+                    <h3>💰 变现路径漏斗模型</h3>
+                    <div class="desc">“内容起量 ➔ IP信任 ➔ 文创变现” 的漏斗留存转化</div>
+                    <div class="chart-container"><canvas id="chart4"></canvas></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 三平台适配与具体实施步骤表 -->
+        <div>
+            <h2 class="section-title">04 / 平台“同根异枝”适配与闭环差异化实施</h2>
+            <div class="info-card">
+                <p>底层视频本体（模块A+B+C）实现跨平台 100% 复用。通过**封面选取标准、标题结构**的差异化进行分化包装，并匹配**各平台独特的生态环境进行差异化闭环实施**：</p>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 10%">平台</th>
+                                <th style="width: 25%">人设与封面选取标准</th>
+                                <th style="width: 25%">标题公式核心要点</th>
+                                <th style="width: 40%">差异化闭环实施步骤</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge">抖音</span></td>
+                                <td><strong>专业手艺人</strong><br><br>选取极具张力的工艺微距特写（如金线视线交汇处），通过强烈的虚实对比和高清微距，激发公域猎奇。</td>
+                                <td><strong>视觉钩子（打破常规认知）<br>+ 工艺属性核心<br>+ 好奇心留白</strong></td>
+                                <td>
+                                    <ul class="step-list">
+                                        <li><strong>1. 置顶评论区组件挂载</strong>：置顶高点击率话术，直接挂载抖音小黄车商品卡片。</li>
+                                        <li><strong>2. 个人主页橱窗测款</strong>：主页大图引导，直达低客单价的非遗文创衍生品橱窗（如祈福卡等）完成快速转化。</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge">快手</span></td>
+                                <td><strong>手艺记录传承者</strong><br><br>展现有烟火气的工作室写实中景，强调“手艺人与作品的良性互动”，不加过度美颜，展现手艺的真实和质朴。</td>
+                                <td><strong>过程磨炼（体现真实付出）<br>+ 匠人内心独白<br>+ 朴实情感表达</strong></td>
+                                <td>
+                                    <ul class="step-list">
+                                        <li><strong>1. 评论区粉丝群裂变</strong>：利用群发助理，对高频互动用户发送自动私信，邀请加入“手艺交流粉丝群”。</li>
+                                        <li><strong>2. 快手小店直销闭环</strong>：直接挂载实体手作画和配套文创工具，利用快手高粘性的熟人私域信任直接成交。</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge">视频号</span></td>
+                                <td><strong>艺术美学传播者</strong><br><br>高清晰度的成品图或最体现几何对称美学的细节。画面强调构图对称性，营造极具质感的静心与艺术仪式感。</td>
+                                <td><strong>慢节奏生活投射<br>+ 祈福/美学寓意<br>+ 深度心灵共鸣引导</strong></td>
+                                <td>
+                                    <ul class="step-list">
+                                        <li><strong>1. 留白简介区直接分流</strong>：在视频号主页简介下方直接挂载“添加企业微信（专属客服）”的快捷按钮，导入微信私域。</li>
+                                        <li><strong>2. 微信小店/小程序闭环</strong>：通过视频号内置组件无缝链接微信小店，完成“看视频-私域咨询-小店交易”的微信生态内闭环。</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 小额投流验证 -->
+        <div>
+            <h2 class="section-title">05 / 冷启动小额投流验证模型</h2>
+            <div class="info-card" style="display: flex; flex-direction: column; gap: 15px;">
+                <p>我们采用**极低成本**的测试闭环逻辑，用真实算法反馈校准投流，避免无效的硬广投入：</p>
+                <p><strong>1. 自然流跑测：</strong>视频发布 12 小时内，若前 5 秒完播率 ＞ 30%，判定内容逻辑跑通，可以作为候选测试款。</p>
+                <p><strong>2. 100元单条追投：</strong>满足指标后，立即投放 100 元，精准定向测试“高活跃兴趣人群”和“相似达人观众”。</p>
+                <p><strong>3. 极速迭代机制：</strong>若测试反馈点击率低，不作盲目消费。立刻替换“黄金开头（模块A）”的视觉素材重新剪辑发布，用最低成本快速跑通算法模型。</p>
+                <p style="margin-top: 10px; border-top: 1px solid #222; padding-top: 15px; color: #888; font-size: 0.85rem;">
+                    * 本方案后续因中心整体预算配置变动而未实际执行上线。但整套极其完备的跨平台调研、内容工程模型和低成本验证思路，在内部汇报中获得了部门同事和博士生导师的高度肯定。
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= 图表数据渲染逻辑 (Chart.js) ================= -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 设置 Chart.js 全局字体与网格颜色（暗黑风适配）
+        Chart.defaults.color = '#888';
+        Chart.defaults.borderColor = '#222';
+
+        // ----- 图表1: 三平台特征对比 -----
+        const ctx1 = document.getElementById('chart1').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['30岁+ 占比', '三线以下城市', '偏好中长视频', '情感/信任驱动'],
+                datasets: [
+                    { label: '抖音', data: [45, 55, 30, 80], backgroundColor: 'rgba(255, 94, 87, 0.75)', borderRadius: 4 },
+                    { label: '快手', data: [65, 75, 65, 85], backgroundColor: 'rgba(0, 168, 255, 0.75)', borderRadius: 4 },
+                    { label: '视频号', data: [75, 80, 70, 90], backgroundColor: 'rgba(2, 232, 129, 0.75)', borderRadius: 4 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'top', labels: { boxWidth: 10, font: { size: 9 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '%';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        max: 100, 
+                        // 数据新闻标准：坐标轴统一标注单位，避免刻度重复
+                        title: {
+                            display: true,
+                            text: '特征显著度 (%)',
+                            color: '#666',
+                            font: { size: 9 }
+                        },
+                        ticks: { 
+                            stepSize: 20, 
+                            font: { size: 8 }
+                        } 
+                    },
+                    x: { grid: { display: false }, ticks: { font: { size: 9 } } }
+                }
+            }
+        });
+
+        // ----- 图表2: 内容模块效能验证 -----
+        const ctx2 = document.getElementById('chart2').getContext('2d');
+        new Chart(ctx2, {
+            type: 'radar',
+            data: {
+                labels: ['5秒内完播率', '互动留存率', '手艺人信任度', '价值共鸣感', '分享与收藏意愿'],
+                datasets: [
+                    { label: '黄金开头 (0-5s)', data: [95, 60, 30, 40, 50], borderColor: '#ff5e57', backgroundColor: 'rgba(255, 94, 87, 0.05)', pointBackgroundColor: '#ff5e57', fill: true },
+                    { label: '过程展示 (5-50s)', data: [70, 90, 95, 60, 70], borderColor: '#00a8ff', backgroundColor: 'rgba(0, 168, 255, 0.05)', pointBackgroundColor: '#00a8ff', fill: true },
+                    { label: '价值锚点 (50-60s)', data: [60, 75, 80, 95, 85], borderColor: '#02e881', backgroundColor: 'rgba(2, 232, 129, 0.05)', pointBackgroundColor: '#02e881', fill: true }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top', labels: { boxWidth: 10, font: { size: 8 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.raw + '分';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    r: {
+                        min: 0,
+                        max: 100,
+                        angleLines: { color: '#222' },
+                        grid: { color: '#222' },
+                        ticks: { 
+                            stepSize: 25, 
+                            display: true, 
+                            color: '#444',
+                            backdropColor: 'transparent', 
+                            font: { size: 8 }
+                            // 清理刻度单位，保持纯数值
+                        },
+                        pointLabels: { font: { size: 8 } }
+                    }
+                }
+            }
+        });
+
+        // ----- 图表3: 生命周期曲线 -----
+        const ctx3 = document.getElementById('chart3').getContext('2d');
+        new Chart(ctx3, {
+            type: 'line',
+            data: {
+                labels: ['起号期', '爆发期', '稳定期', '衰退拐点', '停滞期'],
+                datasets: [
+                    { label: '手艺人人设路线', data: [30, 90, 85, 75, 70], borderColor: '#ff5e57', tension: 0.2, fill: false, pointRadius: 2 },
+                    { label: '纯科普AI路线', data: [40, 85, 55, 30, 20], borderColor: '#b388ff', tension: 0.2, fill: false, pointRadius: 2, borderDash: [3] },
+                    { label: '纯视觉同质化', data: [15, 95, 60, 20, 15], borderColor: '#00a8ff', tension: 0.2, fill: false, pointRadius: 2 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top', labels: { boxWidth: 10, font: { size: 8 } } },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.parsed.y + '分';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        max: 100, 
+                        // 数据新闻标准：坐标轴统一标注单位，避免刻度重复
+                        title: {
+                            display: true,
+                            text: '综合热度指数 (分)',
+                            color: '#666',
+                            font: { size: 9 }
+                        },
+                        ticks: { 
+                            font: { size: 8 }
+                        } 
+                    },
+                    x: { ticks: { font: { size: 8 } } }
+                }
+            }
+        });
+
+        // ----- 图表4: 商业转化漏斗 -----
+        const ctx4 = document.getElementById('chart4').getContext('2d');
+        new Chart(ctx4, {
+            type: 'bar',
+            data: {
+                labels: ['曝光触达', '内容留存', 'IP信任沉淀', '咨询率', '文创成交'],
+                datasets: [{
+                    data: [100, 45, 20, 8, 2],
+                    backgroundColor: ['#ff5e57', '#ffa502', '#ffd32a', '#02e881', '#00a8ff'],
+                    borderRadius: 4,
+                    barPercentage: 0.5
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { 
+                        callbacks: { 
+                            label: function(context) { 
+                                return '转化留存率: ' + context.parsed.x + '%'; 
+                            } 
+                        } 
+                    }
+                },
+                scales: {
+                    x: { 
+                        beginAtZero: true, 
+                        max: 110, 
+                        // 数据新闻标准：坐标轴统一标注单位，避免刻度重复
+                        title: {
+                            display: true,
+                            text: '留存转化率 (%)',
+                            color: '#666',
+                            font: { size: 9 }
+                        },
+                        ticks: { 
+                            font: { size: 8 }
+                        } 
+                    },
+                    y: { grid: { display: false }, ticks: { font: { size: 9 } } }
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

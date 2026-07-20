@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>胡沛荣 | Harry Hu - 个人作品集</title>
+    <!-- 引入 Chart.js 轻量级图表库 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        /* ================= 基础重置与暗黑主题 ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth; /* 平滑滚动跳转 */
+        }
+        body {
+            background-color: #0d0d0d;
+            color: #f5f5f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        a {
+            color: #00ffcc;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        a:hover {
+            color: #ffffff;
+        }
+
+        /* ================= 通用板块样式 ================= */
+        section {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 100px 20px 40px 20px;
+        }
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            border-left: 3px solid #00ffcc;
+            padding-left: 12px;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+        }
+
+        /* ================= 首屏：LOEWE 风格时装海报排版 ================= */
+        #hero-section {
+            height: 100vh;
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #070707; /* 极致视觉纯黑 */
+            overflow: hidden;
+        }
+
+        /* 中心大字：胡沛荣 / HARRY HU */
+        .hero-center {
+            text-align: center;
+            z-index: 5;
+            pointer-events: none;
+        }
+        .hero-name {
+            font-size: clamp(3rem, 10vw, 7rem); /* 响应式超大号字体 */
+            font-weight: 800;
+            letter-spacing: -2px;
+            line-height: 1.05;
+            color: #fff;
+            text-transform: uppercase;
+        }
+        .hero-sub {
+            font-size: 0.85rem;
+            color: #555;
+            margin-top: 15px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        /* 左侧面板：学历背景 + 技能专长（字号变大、间距拉开） */
+        .hero-left-panel {
+            position: absolute;
+            left: 60px;
+            top: 8%;
+            bottom: 8%;
+            width: 340px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 10;
+        }
+        .hero-left-panel h3 {
+            font-size: 0.75rem;
+            color: #444;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .panel-row {
+            margin-bottom: 20px;
+        }
+        .panel-row h4 {
+            font-size: 1rem;
+            color: #fff;
+            font-weight: 600;
+        }
+        .panel-row p {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 4px;
+        }
+        .panel-tag-group {
+            margin-bottom: 15px;
+        }
+        .panel-tag-group h5 {
+            font-size: 0.75rem;
+            color: #444;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .panel-tag {
+            display: inline-block;
+            background-color: #111;
+            color: #aaa;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin: 3px 4px 3px 0;
+            border: 1px solid #1a1a1a;
+        }
+
+        /* 新增：尼康Z6II悬停气泡特效 */
+        .panel-tag.photography {
+            position: relative;
+            cursor: pointer;
+            border-color: #333;
+            color: #fff;
+        }
+        .panel-tag.photography::after {
+            content: "尼康 Z6II + 24-200 / 85";
+            position: absolute;
+            bottom: 130%;
+            left: 50%;
+            transform: translate(-50%, 5px);
+            background-color: #161616;
+            color: #00ffcc;
+            border: 1px solid #333;
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 15px rgba(0,255,204,0.1);
+        }
+        .panel-tag.photography:hover::after {
+            opacity: 1;
+            transform: translate(-50%, 0);
+        }
+
+        /* 右侧面板：联系方式 + 垂直大字导航栏（替代原顶部导航） */
+        .hero-right-panel {
+            position: absolute;
+            right: 60px;
+            top: 8%;
+            bottom: 8%;
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-end;
+            text-align: right;
+            z-index: 10;
+        }
+        .panel-contact-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .panel-contact-item {
+            font-size: 0.85rem;
+            color: #888;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .panel-contact-item span {
+            color: #444;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .panel-contact-item strong {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* 替代顶部导航的垂直菜单 */
+        .vertical-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+        }
+        .vertical-nav a {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #666;
+            letter-spacing: 2px;
+            transition: color 0.3s, transform 0.3s;
+            text-transform: uppercase;
+        }
+        .vertical-nav a:hover {
+            color: #00ffcc;
+            transform: translateX(-5px);
+        }
+
+        /* 底部中心滑动下拉提示 */
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: #333;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+            40% { transform: translate(-50%, -8px); }
+            60% { transform: translate(-50%, -4px); }
+        }
+
+        /* 移动端自适应 */
+        @media (max-width: 900px) {
+            #hero-section {
+                height: auto;
+                padding: 100px 20px 60px 20px;
+                display: block;
+            }
+            .hero-left-panel, .hero-right-panel {
+                position: static;
+                width: 100%;
+                display: block;
+                margin-top: 40px;
+            }
+            .hero-right-panel {
+                text-align: left;
+                align-items: flex-start;
+            }
+            .vertical-nav {
+                align-items: flex-start;
+                margin-top: 30px;
+            }
+            .scroll-hint { display: none; }
+        }
+
+        /* ================= 视频前置至 01 版块 ================= */
+        .video-container {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 40px;
+            background-color: #121212;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 30px;
+        }
+        @media (max-width: 768px) {
+            .video-container { grid-template-columns: 1fr; }
+        }
+        .video-thumbnail-box {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            background-color: #1a1a1a;
+            border-radius: 6px;
+            border: 1px solid #222;
+        }
+
+        /* 新增：视频高亮数据看板 */
+        .video-metrics-highlight {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            border-top: 1px solid #222;
+            padding-top: 20px;
+        }
+        .v-metric-box {
+            flex: 1;
+            background-color: #161616;
+            border: 1px solid #222;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+        .v-metric-box:hover {
+            border-color: #00ffcc;
+        }
+        .v-metric-box strong {
+            display: block;
+            font-size: 1.5rem;
+            color: #00ffcc; /* 霓虹亮青色 */
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+        .v-metric-box span {
+            font-size: 0.7rem;
+            color: #555;
+            text-transform: uppercase;
+        }
+
+        /* ================= Y's 风格非对称作品展示 (Y's Editorial Showcase) ================= */
+        .showcase-wrapper {
+            margin-top: 40px;
+        }
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.8fr 1fr;
+            gap: 40px;
+            align-items: stretch;
+        }
+        @media (max-width: 1024px) {
+            .showcase-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        .showcase-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 480px;
+        }
+        .showcase-tag {
+            font-size: 0.85rem;
+            color: #888;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .showcase-left-bottom {
+            margin-top: auto;
+        }
+        .showcase-date {
+            font-size: 0.75rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .showcase-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            line-height: 1.2;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        .showcase-desc {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        .showcase-see-more {
+            font-size: 0.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #fff;
+            padding-bottom: 4px;
+            color: #fff;
+            display: inline-block;
+        }
+        .showcase-see-more:hover {
+            color: #00ffcc;
+            border-bottom-color: #00ffcc;
+        }
+
+        .showcase-center {
+            position: relative;
+            min-height: 480px;
+            background-color: #121212;
+            overflow: hidden;
+            border: 1px solid #1a1a1a;
+        }
+        .showcase-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 1;
+            transition: opacity 0.4s ease-in-out;
+        }
+
+        /* 右栏：垂直选项卡与分组小标题 */
+        .showcase-right {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: 480px;
+        }
+        .showcase-group-title {
+            font-size: 0.7rem;
+            color: #444;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .showcase-tab {
+            padding: 20px 15px;
+            border-bottom: 1px solid #1a1a1a;
+            cursor: pointer;
+            transition: background 0.3s, border-color 0.3s;
+            margin-bottom: 10px;
+        }
+        .showcase-tab:last-child {
+            margin-bottom: 0;
+        }
+        .showcase-tab-tag {
+            font-size: 0.75rem;
+            color: #555;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        .showcase-tab-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #888;
+            transition: color 0.3s;
+        }
+        .showcase-tab.active {
+            background-color: #111;
+            border-left: 3px solid #00ffcc;
+        }
+        .showcase-tab.active .showcase-tab-title {
+            color: #fff;
+        }
+
+        /* ================= 极简摄影网格 ================= */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .photo-grid { grid-template-columns: 1fr; }
+        }
+        .photo-item {
+            overflow: hidden;
+            position: relative;
+            background-color: #1a1a1a;
+            border: 1px solid #222;
+            border-radius: 6px;
+            aspect-ratio: 4/3;
+        }
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            filter: grayscale(30%);
+        }
+        .photo-item:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0%);
+        }
+        .photo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            font-size: 0.8rem;
+            color: #fff;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .photo-item:hover .photo-caption {
+            opacity: 1;
+        }
+        
+        .rednote-redirect {
+            text-align: right;
+            margin-top: 15px;
+            font-size: 0.8rem;
+        }
+        .rednote-redirect a {
+            color: #555;
+            transition: color 0.3s;
+        }
+        .rednote-redirect a:hover {
+            color: #00ffcc;
+        }
+
+        /* ================= 页脚 ================= */
+        footer {
+            border-top: 1px solid #222;
+            background-color: #080808;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .copyright {
+            color: #555;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 首屏：LOEWE 风格时装海报排版 -->
+    <section id="hero-section">
+        
+        <!-- 左侧面板：学历背景 + 技能专长（加入 AI 应用与 Figma / 尼康 Z6II 悬停提示） -->
+        <div class="hero-left-panel">
+            
+            <!-- 教育背景 -->
+            <div>
+                <h3>Education / 学历背景</h3>
+                <div class="panel-row">
+                    <h4>香港浸会大学 | 数字媒介 硕士</h4>
+                    <p>传理学院 <span>(传媒学科 QS 48)</span> | 2025.09 - 2026.11</p>
+                </div>
+                <div class="panel-row" style="border-top:1px solid #1a1a1a; padding-top:12px;">
+                    <h4>澳门科技大学 | 数据新闻 学士</h4>
+                    <p>人文艺术学院 | 2020.09 - 2024.06</p>
+                </div>
+            </div>
+
+            <!-- 技能专长 -->
+            <div style="margin-top: 30px;">
+                <h3>Skills / 技能与 AI 实践</h3>
+                <div class="panel-tag-group">
+                    <h5>数据、自动化与 AI 工程化</h5>
+                    <span class="panel-tag">AI 辅助编程</span>
+                    <span class="panel-tag">AI 写作出图</span>
+                    <span class="panel-tag">SQL</span>
+                    <span class="panel-tag">Python</span>
+                    <span class="panel-tag">影刀 RPA</span>
+                    <span class="panel-tag">SPSS</span>
+                    <span class="panel-tag">Flourish</span>
+                </div>
+                <div class="panel-tag-group">
+                    <h5>多媒体、UI规划与视觉转译</h5>
+                    <span class="panel-tag photography">摄影</span> <!-- 悬停展示器材 -->
+                    <span class="panel-tag">剪映 / Pr / Lr / Ps</span>
+                    <span class="panel-tag">Figma / Adobe XD</span>
+                    <span class="panel-tag">秀米编辑器 (公众号排版)</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 视觉中心：巨型名字与极简表述 -->
+        <div class="hero-center">
+            <h1 class="hero-name">胡沛荣<br><span style="color:#00ffcc; letter-spacing: 0;">Harry Hu</span></h1>
+            <div class="hero-sub">我的作品集 & 项目网站 / PORTFOLIO & PROJECTS</div>
+        </div>
+
+        <!-- 右侧面板：联系方式 + 垂直大字导航栏 -->
+        <div class="hero-right-panel">
+            
+            <!-- 联系方式 -->
+            <div class="panel-contact-group">
+                <div class="panel-contact-item">
+                    <span>Email / 邮箱</span>
+                    <strong>harryhpr@qq.com</strong>
+                </div>
+                <div class="panel-contact-item">
+                    <span>WeChat / 微信</span>
+                    <strong>Cheese_t1</strong>
+                </div>
+                <div class="panel-contact-item">
+                    <span>Phone / 电话</span>
+                    <strong>+86 17786140361</strong>
+                </div>
+            </div>
+
+            <!-- 替代顶部导航的垂直菜单 -->
+            <div class="vertical-nav">
+                <a href="#video">Video / 视频创作</a>
+                <a href="#ops">Projects / 运营作品</a>
+                <a href="#photography">Photo / 个人摄影</a>
+                <a href="#contact">Contact / 联系我</a>
+            </div>
+
+        </div>
+
+        <!-- 底部中心滑动下拉提示 -->
+        <div class="scroll-hint">
+            <span>Scroll Down / 滑动下拉看作品</span>
+            <span style="font-size: 1rem;">↓</span>
+        </div>
+
+    </section>
+
+    <!-- 01 / 原创编导爆款短视频（视频创作板块前置） -->
+    <section id="video">
+        <h2 class="section-title">01 / VIDEO CREATION <span>/ 原创编导爆款短视频</span></h2>
+        <div class="video-container">
+            <div class="video-thumbnail-box">
+                <!-- 链接及封面图片完美对齐 -->
+                <a href="https://v.douyin.com/F57z1RpLM6w" target="_blank" style="display: block; width: 100%; height: 100%;">
+                    <img src="image/HIMO.png" alt="海马体宣传片封面" style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); transition: filter 0.3s;" onmouseover="this.style.filter='brightness(1.0)'" onmouseout="this.style.filter='brightness(0.7)'">
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; background: rgba(0,0,0,0.85); padding: 12px 24px; border-radius: 4px; font-weight: bold; border: 1px solid #00ffcc; color: #00ffcc; font-size: 0.9rem; letter-spacing: 1px; white-space: nowrap;">
+                        ▶ 在抖音观看视频
+                    </div>
+                </a>
+            </div>
+            <div style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <span style="color:#00ffcc; font-size:0.8rem; text-transform: uppercase;">商业片拍剪</span>
+                    <h3 style="font-size: 1.5rem; margin: 10px 0 15px 0;">“海马体照相馆”商业广告宣传片</h3>
+                    <p style="color:#aaa; font-size:0.9rem; margin-bottom: 20px;">
+                        独立负责视频脚本撰写、镜头分镜设计、拍摄执行及后期剪辑。广告片以学生创作的形式发布于抖音、小红书等平台，获得“海马体”官方高度认可。
+                    </p>
+                </div>
+                <!-- 重点加粗高亮数据 -->
+                <div class="video-metrics-highlight">
+                    <div class="v-metric-box">
+                        <strong>10w+</strong>
+                        <span>播放量</span>
+                    </div>
+                    <div class="v-metric-box">
+                        <strong>3k+</strong>
+                        <span>点赞量</span>
+                    </div>
+                    <div class="v-metric-box">
+                        <strong style="font-size: 1.15rem; margin-top: 5px; color:#fff;">官方认可</strong>
+                        <span>品牌认可度</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 02 / 重构：Y's 风格非对称作品展示 (Y's Editorial Showcase) -->
+    <section id="ops">
+        <h2 class="section-title">02 / PROJECTS <span>/ 精选商业与新媒体项目</span></h2>
+        
+        <div class="showcase-wrapper">
+            <div class="showcase-grid">
+                
+                <!-- 左栏：项目详情展示 -->
+                <div class="showcase-left">
+                    <span class="showcase-tag">—— HIGHLIGHTS</span>
+                    <div class="showcase-left-bottom">
+                        <div class="showcase-date" id="showcase-date">Aug 2025</div>
+                        <h3 class="showcase-title" id="showcase-title">良品铺子 · <br>营销物料与视觉重构</h3>
+                        <p class="showcase-desc" id="showcase-desc">
+                            主导大促微信私域营销物料与视觉重构，深度解构猜谜题库。规划 700w 存量用户精细化分层券包与闭环实施，达成大促核销转化率 21.6%，实现线下触点优化与私域激活。
+                        </p>
+                        <a href="project-bestore.html" class="showcase-see-more" id="showcase-link">SEE MORE</a>
+                    </div>
+                </div>
+
+                <!-- 中栏：大图展示 -->
+                <div class="showcase-center">
+                    <img src="image/lppz.png" alt="精选项目展示" class="showcase-img" id="showcase-img">
+                </div>
+
+                <!-- 右栏：垂直选项卡与高级分组小标题 -->
+                <div class="showcase-right">
+                    
+                    <!-- 分组 1: 品牌大案 -->
+                    <div class="showcase-group-title">Brand Campaigns / 商业与品牌策略</div>
+                    
+                    <div class="showcase-tab active" onclick="switchProject(0)">
+                        <div class="showcase-tab-tag">良品铺子</div>
+                        <div class="showcase-tab-title">节日营销物料与视觉重构</div>
+                    </div>
+
+                    <div class="showcase-tab" onclick="switchProject(1)">
+                        <div class="showcase-tab-tag">西藏唐卡</div>
+                        <div class="showcase-tab-title">短视频变现策略提案</div>
+                    </div>
+
+                    <!-- 分组 2: 媒体内容 -->
+                    <div class="showcase-group-title" style="margin-top: 25px;">Media Editorial / 新媒体内容撰写与运营</div>
+
+                    <div class="showcase-tab" onclick="switchProject(2)">
+                        <div class="showcase-tab-tag">情报姬</div>
+                        <div class="showcase-tab-title">二次元深度内容运营</div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 摄影作品展示（正好3张，外加小红书极简跳转） -->
+<!-- 摄影作品展示（精选 5 张：画册级非对称排版） -->
+    <style>
+        /* ================= 新版：非对称人文画廊网格 CSS ================= */
+        .photo-gallery-editorial {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+        @media (max-width: 768px) {
+            .photo-gallery-editorial {
+                grid-template-columns: 1fr; /* 移动端自动转为单列，防止挤压 */
+            }
+            .photo-item-editorial {
+                grid-column: span 1 !important;
+                aspect-ratio: 4/3 !important; /* 移动端统一为舒适的 4:3 */
+            }
+        }
+        
+        .photo-item-editorial {
+            position: relative;
+            overflow: hidden;
+            background-color: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+        .photo-item-editorial:hover {
+            border-color: #00ffcc;
+        }
+        .photo-item-editorial img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.3s ease;
+            filter: grayscale(15%); /* 微弱灰度保护暗色调 */
+        }
+        .photo-item-editorial:hover img {
+            transform: scale(1.03);
+            filter: grayscale(0%);
+        }
+
+        /* 画册级格栅分布配置 */
+        .photo-editorial-vertical { 
+            grid-column: span 3; 
+            aspect-ratio: 3/4; /* 纵向卡片 */
+        }
+        .photo-editorial-wide { 
+            grid-column: span 6; 
+            aspect-ratio: 21/9; /* 超宽幅全景卡片 */
+        }
+        
+        /* 精致黑底投影字幕 */
+        .photo-caption-editorial {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.85));
+            font-size: 0.8rem;
+            color: #fff;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .photo-item-editorial:hover .photo-caption-editorial {
+            opacity: 1;
+        }
+        .photo-caption-editorial span {
+            color: #00ffcc;
+            font-size: 0.7rem;
+            display: block;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+
+<!-- 摄影作品展示（精选 5 张：5列单行紧凑排版） -->
+    <style>
+        /* ================= 新版：5列单行紧凑画廊 CSS ================= */
+        .photo-gallery-compact {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+        }
+        @media (max-width: 900px) {
+            .photo-gallery-compact {
+                grid-template-columns: repeat(2, 1fr); /* 平板端自适应为 2 列 */
+            }
+        }
+        @media (max-width: 500px) {
+            .photo-gallery-compact {
+                grid-template-columns: 1fr; /* 移动端自适应为 1 列 */
+            }
+        }
+        
+        .photo-item-compact {
+            position: relative;
+            overflow: hidden;
+            background-color: #111;
+            border: 1px solid #222;
+            border-radius: 6px;
+            aspect-ratio: 3/4; /* 紧凑纵向黄金比例 */
+            transition: border-color 0.3s ease;
+        }
+        .photo-item-compact:hover {
+            border-color: #00ffcc;
+        }
+        .photo-item-compact img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.3s ease;
+            filter: grayscale(15%);
+        }
+        .photo-item-compact:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0%);
+        }
+        
+        /* 紧凑版浮窗字幕 */
+        .photo-caption-compact {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.85));
+            font-size: 0.75rem;
+            color: #fff;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .photo-item-compact:hover .photo-caption-compact {
+            opacity: 1;
+        }
+        .photo-caption-compact span {
+            color: #00ffcc;
+            font-size: 0.65rem;
+            display: block;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+
+<!-- 摄影作品展示（精选 6 张：完美复现手绘双行交错网格） -->
+    <style>
+        /* ================= 新版：交错画册网格 CSS ================= */
+        .photo-gallery-layout {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4列等宽 */
+            grid-auto-rows: 320px; /* 限制行高为320px，确保完全等高对齐 */
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        /* 移动端/小屏自适应降级，防止画面被过度挤压 */
+        @media (max-width: 900px) {
+            .photo-gallery-layout {
+                grid-template-columns: repeat(2, 1fr);
+                grid-auto-rows: 280px;
+            }
+            .photo-item-span2 {
+                grid-column: span 2; /* 平板端依然保持横幅 */
+            }
+        }
+        @media (max-width: 500px) {
+            .photo-gallery-layout {
+                grid-template-columns: 1fr;
+                grid-auto-rows: 260px;
+            }
+            .photo-item-span1, .photo-item-span2 {
+                grid-column: span 1 !important; /* 手机端全部降级为单列等大卡片 */
+            }
+        }
+        
+        .photo-item-editorial {
+            position: relative;
+            overflow: hidden;
+            background-color: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+        .photo-item-editorial:hover {
+            border-color: #00ffcc;
+        }
+        .photo-item-editorial img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.3s ease;
+            filter: grayscale(15%);
+        }
+        .photo-item-editorial:hover img {
+            transform: scale(1.03);
+            filter: grayscale(0%);
+        }
+
+        /* 控制格栅跨度 */
+        .photo-item-span1 {
+            grid-column: span 1;
+        }
+        .photo-item-span2 {
+            grid-column: span 2;
+        }
+        
+        /* 浮窗字幕 */
+        .photo-caption-editorial {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.85));
+            font-size: 0.8rem;
+            color: #fff;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .photo-item-editorial:hover .photo-caption-editorial {
+            opacity: 1;
+        }
+        .photo-caption-editorial span {
+            color: #00ffcc;
+            font-size: 0.7rem;
+            display: block;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+
+    <section id="photography">
+        <h2 class="section-title">03 / PHOTOGRAPHY <span>/ 个人摄影（风光与静物）</span></h2>
+        
+        <div class="photo-gallery-layout">
+            
+            <!-- ================= Row 1 ================= -->
+            
+            <!-- 1. 香港赤柱 (1列) -->
+            <div class="photo-item-editorial photo-item-span1">
+                <img src="image/image3.jpg" alt="香港赤柱">
+                <div class="photo-caption-editorial">
+                    <span>Landscape / 香港赤柱</span>
+                    赤柱海岸 · 临海墅群
+                </div>
+            </div>
+
+            <!-- 2. 武侯祠 (1列) -->
+            <div class="photo-item-editorial photo-item-span1">
+                <img src="image/image1.jpg" alt="武侯祠">
+                <div class="photo-caption-editorial">
+                    <span>Cultural / 四川成都</span>
+                    武侯祠 · 古建红叶一隅
+                </div>
+            </div>
+
+            <!-- 3. 香港夜景 (跨2列) -->
+            <div class="photo-item-editorial photo-item-span2">
+                <img src="image/image4.jpg" alt="香港夜景">
+                <div class="photo-caption-editorial">
+                    <span>Nightview / 香港太平山</span>
+                    太平山下 · 港岛万家灯火
+                </div>
+            </div>
+
+            <!-- ================= Row 2 ================= -->
+
+            <!-- 4. 深圳笔架山 (跨2列) -->
+            <div class="photo-item-editorial photo-item-span2">
+                <img src="image/image2.jpg" alt="深圳笔架山">
+                <div class="photo-caption-editorial">
+                    <span>Cityscape / 深圳笔架山</span>
+                    笔架山俯瞰 · 深圳城市线
+                </div>
+            </div>
+
+            <!-- 5. 楼梯间 (1列) -->
+            <div class="photo-item-editorial photo-item-span1">
+                <img src="image/image6.jpg" alt="楼梯间">
+                <div class="photo-caption-editorial">
+                    <span>Abstract / 几何秩序</span>
+                    纵深美学 · 旋转楼梯间
+                </div>
+            </div>
+
+            <!-- 6. 维港烟花 (1列) -->
+            <div class="photo-item-editorial photo-item-span1">
+                <img src="image/image5.jpg" alt="维港烟花">
+                <div class="photo-caption-editorial">
+                    <span>Celebration / 维多利亚港</span>
+                    维港绽放 · 节庆烟花
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 小红书极简跳转小字 -->
+        <div class="rednote-redirect">
+            <!-- 替换说明：将 href 替换为您的小红书真实链接 -->
+            <a href="https://xhslink.com/m/4s6vdUGaafb" target="_blank">在小红书查看我的更多作品 ➔</a>
+        </div>
+
+    </section>
+    <!-- 底部联系 & 简历下载 (Contact) -->
+    <footer id="contact">
+        <div class="contact-info">
+            <h2 style="font-size: 1.8rem; margin-bottom: 20px; font-weight: normal;">GET IN TOUCH</h2>
+            <p>邮箱: harryhpr@qq.com</p>
+            <p>微信: Cheese_t1</p>
+            <p style="margin-top: 25px;">
+                <!-- 替换说明：将 href 替换为您的 PDF 简历链接 -->
+                <a href="胡沛荣_运营实习生.pdf" class="btn btn-accent" download>下载我的完整 PDF 简历</a>
+            </p>
+        </div>
+        <div class="copyright">
+            <p>© 2026 胡沛荣. All Rights Reserved. 托管于 GitHub & Cloudflare</p>
+        </div>
+    </footer>
+
+    <!-- ================= 交互脚本 ================= -->
+    <script>
+        // Y's 风格非对称轮播切换数据
+        const projectsData = [
+            {
+                title: "良品铺子 · <br>营销物料与视觉重构",
+                date: "Aug 2025",
+                desc: "主导大促微信私域营销物料与视觉重构，深度解构猜谜题库。规划 700w 存量用户精细化分层券包与闭环实施，达成大促核销转化率 21.6%，实现线下触点优化与私域激活。",
+                image: "image/lppz.png",
+                link: "project-bestore.html"
+            },
+            {
+                title: "西藏非遗唐卡 · <br>短视频变现提案",
+                date: "Aug 2023",
+                desc: "解构抖音、快手、视频号三大平台 15 个头部账号、7000+条短视频数据。提炼可复用的内容模型公式，输出完整的低成本账号冷启动变现方案。",
+                image: "image/tk.jpg",
+                link: "project-tangkar.html"
+            },
+            {
+                title: "情报姬 · <br>二次元深度内容运营",
+                date: "Aug 2022",
+                desc: "以笔名“咖啡上头”独立撰写原创深度推文 100+ 篇。针对动漫、游戏、二次元热点撰写符合媒体调性、强时效性的文案，实现全网多篇推文阅读量破 10 万。",
+                image: "image/qbj.jpg",
+                link: "project-qbj.html"
+            }
+        ];
+
+        let transitionTimeout;
+
+        function switchProject(index) {
+            const tabs = document.querySelectorAll('.showcase-tab');
+            tabs.forEach((tab, i) => {
+                // 根据点击项计算实际 active 对应的项
+                // 选项卡索引在 DOM 排序中：良品铺子为0，西藏唐卡为1，情报姬为2
+                tab.classList.toggle('active', i === index);
+            });
+
+            // 转换数据数组的索引（良品铺子:0, 唐卡:1, 情报姬:2）
+            const data = projectsData[index];
+            const imgElement = document.getElementById('showcase-img');
+            
+            if (transitionTimeout) clearTimeout(transitionTimeout);
+
+            imgElement.style.opacity = '0';
+
+            transitionTimeout = setTimeout(() => {
+                document.getElementById('showcase-date').innerText = data.date;
+                document.getElementById('showcase-title').innerHTML = data.title;
+                document.getElementById('showcase-desc').innerText = data.desc;
+                document.getElementById('showcase-link').setAttribute('href', data.link);
+                
+                imgElement.setAttribute('src', data.image);
+                imgElement.style.opacity = '1';
+            }, 300);
+        }
+    </script>
+
+</body>
+</html>
