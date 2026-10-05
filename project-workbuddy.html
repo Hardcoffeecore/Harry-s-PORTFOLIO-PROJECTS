@@ -1,0 +1,2271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>腾讯 WorkBuddy 生态发布会 · 微信支付 × 微信小店 · 项目作品</title>
+    <style>
+        /* ================= 基础 ================= */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth;
+            /* 整体缩到 80%：等价于浏览器缩放 80%，排版不变 */
+            zoom: 0.8;
+        }
+        body {
+            background-color: #0d0d0d; color: #f5f5f5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Source Han Sans SC", "Noto Sans CJK SC", sans-serif;
+            line-height: 1.7;
+        }
+        a { color: #00ffcc; text-decoration: none; transition: color 0.3s; }
+        a:hover { color: #fff; }
+
+        .layout { display: flex; max-width: 1440px; margin: 0 auto; }
+
+        /* ================= 左侧固定导航 ================= */
+        .sidenav {
+            width: 208px; flex-shrink: 0; position: sticky; top: 0;
+            height: calc(100vh / 0.8); padding: 40px 18px 40px 24px;
+            border-right: 1px solid #1a1a1a; overflow-y: auto;
+            display: flex; flex-direction: column;
+        }
+        .nav-brand { font-size: 0.68rem; color: #444; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+
+        /* ---- 项目切换块（手风琴：每个项目自带可展开的章节抽屉） ---- */
+        .proj-switch {
+            border: 1px solid #1e1e1e; border-radius: 11px;
+            background: #0f0f0f; overflow: hidden; margin-bottom: 22px;
+        }
+        .proj-item {
+            display: block; position: relative;
+            padding: 13px 16px;
+            border-bottom: 1px solid #1a1a1a;
+            transition: background .25s;
+        }
+        .proj-item:last-child { border-bottom: none; }
+        .proj-item .pi-head { display: flex; align-items: center; gap: 8px; position: relative; cursor: pointer; }
+        .proj-item .pi-idx-wrap { flex: 1 1 auto; min-width: 0; }
+        .proj-item .pi-idx {
+            font-size: 0.6rem; font-weight: 800; letter-spacing: 1.6px;
+            color: #444; display: block; margin-bottom: 4px; transition: color .25s;
+        }
+        .proj-item .pi-name {
+            font-size: 0.82rem; color: #8a8a8a; font-weight: 600;
+            line-height: 1.35; display: block; transition: color .25s;
+        }
+        /* 右侧箭头：指示可展开 */
+        .proj-item .pi-arrow {
+            flex-shrink: 0;
+            width: 7px; height: 7px;
+            border-right: 1.5px solid #3a3a3a; border-bottom: 1.5px solid #3a3a3a;
+            transform: rotate(45deg); transition: transform .35s, border-color .3s;
+        }
+        .proj-item:hover { background: #141414; }
+        .proj-item:hover .pi-name { color: #ddd; }
+
+        .proj-item.active { background: rgba(0,255,204,.05); }
+        .proj-item.active .pi-idx { color: #00ffcc; }
+        .proj-item.active .pi-name { color: #fff; }
+        .proj-item.active .pi-arrow {
+            transform: rotate(-135deg); border-color: #00ffcc;
+        }
+        /* 选中态左侧绿竖条 */
+        .proj-item::before {
+            content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+            width: 2px; background: #00ffcc; transform: scaleY(0);
+            transform-origin: top; transition: transform .35s cubic-bezier(.22,1,.36,1);
+        }
+        .proj-item.active::before { transform: scaleY(1); }
+
+        /* ---- 抽屉：章节列表（max-height 过渡，收起时彻底不占位） ---- */
+        .proj-drawer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .42s cubic-bezier(.22,1,.36,1);
+        }
+        .proj-item.active .proj-drawer { max-height: 420px; }
+        .proj-drawer ul { list-style: none; padding: 6px 0 4px 0; }
+        /* 非 active：条目隐藏且不移位 */
+        .proj-drawer li {
+            opacity: 0; transform: translateY(-6px);
+            transition: opacity .3s, transform .3s;
+        }
+        .proj-item.active .proj-drawer li { opacity: 1; transform: translateY(0); }
+        .proj-item.active .proj-drawer li:nth-child(1) { transition-delay: .06s; }
+        .proj-item.active .proj-drawer li:nth-child(2) { transition-delay: .11s; }
+        .proj-item.active .proj-drawer li:nth-child(3) { transition-delay: .16s; }
+        .proj-item.active .proj-drawer li:nth-child(4) { transition-delay: .21s; }
+        .proj-item.active .proj-drawer li:nth-child(5) { transition-delay: .26s; }
+
+        .sidenav a.nav-link {
+            display: block; font-size: 0.76rem; color: #666;
+            padding: 7px 10px 7px 4px; line-height: 1.45;
+            transition: color .22s, padding-left .22s;
+        }
+        .sidenav a.nav-link:hover { color: #00ffcc; padding-left: 8px; }
+        .sidenav a.nav-link.active { color: #00ffcc; }
+
+        .nav-title { display: none; }
+        .sidenav ul { list-style: none; }
+        .sidenav li { margin-bottom: 2px; }
+        .sidenav .back-btn {
+            margin-top: auto; padding-top: 18px; border-top: 1px solid #1a1a1a;
+            font-size: 0.76rem; color: #555; display: block;
+        }
+        .content { flex: 1; min-width: 0; padding: 40px 45px 80px 45px; }
+
+        @media (max-width: 900px) {
+            .layout { display: block; }
+            .sidenav {
+                width: 100%; height: auto; position: relative;
+                border-right: none; border-bottom: 1px solid #1a1a1a; padding: 22px 20px;
+            }
+            .proj-switch { border-radius: 10px; }
+            .proj-item { padding: 12px 15px; }
+            .content { padding: 28px 20px 60px 20px; }
+        }
+
+        /* ================= 头部 ================= */
+        .header {
+            border-bottom: 2px solid #222; padding-bottom: 1.3rem; margin-bottom: 2.8rem;
+            display: flex; justify-content: space-between; align-items: flex-end;
+            flex-wrap: wrap; gap: 18px;
+        }
+        .header h1 { font-size: 1.85rem; font-weight: 700; line-height: 1.15; }
+        .header h1 span { color: #00ffcc; }
+        .header .sub { font-size: 0.84rem; color: #666; margin-top: 0.4rem; }
+        .sub-badge {
+            font-size: 0.78rem; background: #161616; border: 1px solid #333;
+            color: #00ffcc; padding: 0.42rem 1.05rem; border-radius: 40px; white-space: nowrap;
+        }
+
+        /* ================= 简介 ================= */
+        .intro {
+            display: grid; grid-template-columns: 1.55fr 1fr; gap: 40px;
+            background-color: #121212; border: 1px solid #1e1e1e; border-radius: 12px;
+            padding: 34px 36px; margin-bottom: 60px;
+        }
+        @media (max-width: 800px) { .intro { grid-template-columns: 1fr; gap: 26px; padding: 26px 22px; } }
+
+        /* 左：一句核心定位 + 职责清单 */
+        .intro-lead {
+            font-size: 1.12rem; color: #e6e6e6; line-height: 1.7;
+            font-weight: 500; margin-bottom: 22px; letter-spacing: .3px;
+        }
+        .intro-lead b { color: #00ffcc; font-weight: 700; }
+
+        .duty-list { display: flex; flex-direction: column; gap: 13px; }
+        .duty {
+            display: flex; gap: 13px; align-items: flex-start;
+            padding-left: 15px; border-left: 2px solid #1f1f1f;
+            transition: border-color .25s;
+        }
+        .duty:hover { border-left-color: #00ffcc; }
+        .duty .d-idx {
+            font-size: 0.68rem; font-weight: 800; color: #00ffcc;
+            letter-spacing: 1px; padding-top: 3px; flex-shrink: 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .duty .d-txt { font-size: 0.9rem; color: #a8a8a8; line-height: 1.65; }
+        .duty .d-txt b { color: #e0e0e0; font-weight: 600; }
+
+        .intro-foot {
+            margin-top: 24px; padding-top: 18px; border-top: 1px solid #1c1c1c;
+            font-size: 0.78rem; color: #6a6a6a; line-height: 1.75;
+        }
+
+        .intro-meta {
+            display: flex; flex-direction: column; gap: 14px;
+            border-left: 1px solid #1c1c1c; padding-left: 34px;
+        }
+        @media (max-width: 800px) { .intro-meta { border-left: none; padding-left: 0; border-top: 1px solid #1c1c1c; padding-top: 22px; } }
+        .meta-row { display: flex; flex-direction: column; gap: 3px; }
+        .meta-row span {
+            font-size: 0.64rem; color: #4d4d4d; text-transform: uppercase;
+            letter-spacing: 1.8px; font-weight: 600;
+        }
+        .meta-row strong { font-size: 0.88rem; color: #ddd; font-weight: 500; line-height: 1.6; }
+
+        /* ================= Part 通用 ================= */
+        .part { margin-bottom: 90px; scroll-margin-top: 20px; }
+
+        /* Part 标题组：大号空心数字 + 中文标题 + 薄荷绿短线 */
+        .part-head {
+            display: flex; align-items: stretch; gap: 18px;
+            margin-bottom: 26px;
+        }
+        .part-num {
+            font-size: 3.6rem; font-weight: 900; line-height: 1;
+            color: transparent; -webkit-text-stroke: 2.5px #00ffcc;
+            letter-spacing: -2px; flex-shrink: 0;
+            display: flex; align-items: center;
+            text-shadow: 0 0 18px rgba(0,255,204,.35);
+            transition: text-shadow .3s;
+        }
+        .part-head:hover .part-num { text-shadow: 0 0 26px rgba(0,255,204,.6); }
+        .part-title-wrap {
+            flex: 1 1 auto;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+        .part-title {
+            font-size: 1.6rem; font-weight: 800; color: #fff;
+            line-height: 1.2; letter-spacing: .5px;
+        }
+        .part-title em {
+            font-style: normal; color: #00ffcc;
+        }
+        .part-rule {
+            width: 46px; height: 3px; background: #00ffcc; border-radius: 2px;
+            margin-top: 8px;
+        }
+
+        .part-lead { color: #808080; font-size: 0.88rem; line-height: 1.85; margin-bottom: 30px; max-width: 780px; }
+        .part-lead strong { color: #ccc; font-weight: 500; }
+
+        /* ================= Part 01 ================= */
+        .kv-line1 { display: grid; grid-template-columns: 1.35fr 1fr; gap: 30px; align-items: center; margin-bottom: 40px; }
+        @media (max-width: 850px) { .kv-line1 { grid-template-columns: 1fr; gap: 22px; } }
+        .kv-line1 > figure { margin: 0; }
+        .kv-line1 img { width: 100%; border-radius: 10px; border: 1px solid #222; display: block; }
+
+        .kv-note .label {
+            font-size: 0.68rem; color: #00ffcc; letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: 12px;
+        }
+        .kv-note h3 { font-size: 1.15rem; color: #fff; font-weight: 600; margin-bottom: 14px; line-height: 1.4; }
+        .kv-note p { font-size: 0.86rem; color: #999; margin-bottom: 12px; }
+        .kv-note .credit {
+            margin-top: 18px; padding-top: 16px; border-top: 1px solid #1e1e1e;
+            font-size: 0.8rem; color: #777;
+        }
+        .kv-note .credit b { color: #00ffcc; font-weight: 500; }
+        .kv-note .credit .dim { color: #666; }
+
+        .output-head {
+            display: flex; align-items: baseline; gap: 14px; margin-bottom: 16px;
+            padding-top: 26px; border-top: 1px solid #1a1a1a;
+        }
+        .output-head h3 { font-size: 1.05rem; color: #fff; font-weight: 600; }
+        .output-head .oh-sub { font-size: 0.8rem; color: #666; }
+
+        .output-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+        @media (max-width: 900px) { .output-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 520px) { .output-grid { grid-template-columns: 1fr; } }
+        .output-grid figure { margin: 0; }
+        .output-grid img { width: 100%; border-radius: 8px; border: 1px solid #222; display: block; transition: border-color .3s; }
+        .output-grid img:hover { border-color: #00ffcc; }
+        .output-grid .cap { font-size: 0.74rem; color: #777; margin-top: 8px; line-height: 1.5; }
+        .output-grid .cap b { color: #ccc; }
+
+        /* 长图缩略：与海报等高，统一 9:16 */
+        .thumb-long {
+            position: relative; overflow: hidden; border-radius: 8px;
+            border: 1px solid #222; background: #111;
+            aspect-ratio: 9 / 16;
+        }
+        .thumb-long img {
+            width: 100%; height: 100%; object-fit: cover; object-position: top;
+            border: none; border-radius: 0;
+        }
+
+        /* ================= 图片点击放大 ================= */
+        .zoomable { cursor: zoom-in; }
+        .zoomable:hover { border-color: #00ffcc !important; }
+
+        /* ================= Part 03：轮播 ================= */
+        .carousel-outer {
+            background: #101010; border: 1px solid #1c1c1c; border-radius: 14px;
+            padding: 30px 32px 34px 32px;
+        }
+        .carousel-wrap {
+            display: grid; grid-template-columns: 1fr 1.35fr; gap: 34px; align-items: center;
+        }
+        @media (max-width: 950px) { .carousel-wrap { grid-template-columns: 1fr; gap: 28px; } }
+
+        /* 左：故事线文案 */
+        .story-panel { display: flex; flex-direction: column; justify-content: center; }
+        .day-tabs { display: none; }
+
+        /* 大号 DAY 切换：整个框顶部、通栏居中 */
+        .day-switch {
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 26px; padding-bottom: 22px; border-bottom: 1px solid #1a1a1a;
+        }
+        .day-btn {
+            background: none; border: none; font-family: inherit; cursor: pointer;
+            padding: 4px 26px; transition: all .3s; position: relative;
+            color: #383838; font-size: 2.1rem; font-weight: 800;
+            letter-spacing: 1px; line-height: 1;
+        }
+        @media (max-width: 700px) { .day-btn { font-size: 1.45rem; padding: 4px 13px; } }
+        .day-btn:hover { color: #6a6a6a; }
+        .day-btn.on { color: #00ffcc; text-shadow: 0 0 26px rgba(0,255,204,.4); }
+        .day-btn.on::after {
+            content: ""; position: absolute; left: 50%; transform: translateX(-50%);
+            bottom: -9px; width: 26px; height: 2px; background: #00ffcc; border-radius: 2px;
+        }
+        .day-sep { color: #1e1e1e; font-size: 1.5rem; font-weight: 300; user-select: none; }
+        @media (max-width: 700px) { .day-sep { font-size: 1rem; } }
+
+        .story-day { font-size: 1.05rem; color: #00ffcc; letter-spacing: 1px; font-weight: 600; margin-bottom: 4px; }
+        .story-h { font-size: 1.9rem; color: #fff; font-weight: 700; margin: 8px 0 10px 0; line-height: 1.28; }
+        .story-kw { font-size: 1.05rem; color: #00ffcc; margin-bottom: 20px; }
+        .story-p { font-size: 0.95rem; color: #a8a8a8; line-height: 1.85; }
+        .story-formula {
+            margin-top: 18px; padding-top: 14px; border-top: 1px solid #1e1e1e;
+            font-size: 0.73rem; color: #666; letter-spacing: .5px;
+        }
+
+        /* 右：弧形轮播 */
+        .carousel { position: relative; }
+        .stage {
+            position: relative; height: 400px;
+            perspective: 1200px;
+        }
+        @media (max-width: 700px) { .stage { height: 320px; } }
+
+        .slide {
+            position: absolute; top: 50%; left: 50%;
+            width: 190px; margin-left: -95px; margin-top: -160px;
+            border-radius: 9px; overflow: hidden;
+            border: 1px solid #222; background: #111;
+            transition: transform .6s cubic-bezier(.22,1,.36,1), opacity .6s, filter .6s, box-shadow .6s;
+            will-change: transform, opacity;
+        }
+        @media (max-width: 700px) { .slide { width: 140px; margin-left: -70px; margin-top: -118px; } }
+        .slide img { width: 100%; display: block; }
+
+        /* 三个位置：左后（灰）、中前（亮）、右后（灰） */
+        .slide.pos-l { transform: translateX(-155px) scale(.78) rotateY(16deg); opacity: .45; filter: grayscale(1) brightness(.55); z-index: 1; }
+        .slide.pos-c { transform: translateX(0) scale(1) rotateY(0deg); opacity: 1; filter: none; z-index: 3; box-shadow: 0 18px 50px rgba(0,255,204,.13); }
+        .slide.pos-r { transform: translateX(155px) scale(.78) rotateY(-16deg); opacity: .45; filter: grayscale(1) brightness(.55); z-index: 1; }
+        @media (max-width: 700px) {
+            .slide.pos-l { transform: translateX(-105px) scale(.76) rotateY(16deg); }
+            .slide.pos-r { transform: translateX(105px) scale(.76) rotateY(-16deg); }
+        }
+
+        /* 版本标签浮在中前那张上 */
+        .stage-tag {
+            position: absolute; left: 50%; transform: translateX(-50%);
+            bottom: -6px; font-size: 0.7rem; letter-spacing: 2px;
+            color: #00ffcc; text-transform: uppercase;
+        }
+
+        .carousel-ctrl { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 30px; }
+        .ctrl-btn {
+            background: none; border: 1px solid #2e2e2e; color: #999;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+            font-size: 1rem; transition: all .25s; font-family: inherit; line-height: 1;
+        }
+        .ctrl-btn:hover { border-color: #00ffcc; color: #00ffcc; background: #0d1717; }
+        .dots { display: flex; gap: 8px; }
+        .dot {
+            width: 7px; height: 7px; border-radius: 50%; background: #2e2e2e;
+            cursor: pointer; transition: all .3s;
+        }
+        .dot.on { background: #00ffcc; width: 22px; border-radius: 4px; }
+
+        .carousel-cap {
+            text-align: center; font-size: 0.8rem; color: #888; margin-top: 16px;
+            min-height: 42px; line-height: 1.55;
+        }
+        .carousel-cap b { color: #00ffcc; }
+
+        /* ================= Part 05：长图迭代 ================= */
+        .long-note {
+            background: #121212; border: 1px solid #1e1e1e; border-radius: 10px;
+            padding: 26px 28px;
+        }
+        .long-note h3 { font-size: 1.05rem; color: #fff; font-weight: 600; margin-bottom: 13px; }
+        .long-note p { font-size: 0.85rem; color: #999; margin-bottom: 12px; }
+        .long-note .kv-line { display: flex; gap: 10px; font-size: 0.81rem; color: #888; padding: 8px 0; border-bottom: 1px solid #161616; }
+        .long-note .kv-line b { color: #ccc; font-weight: 600; min-width: 58px; flex-shrink: 0; }
+
+        /* ---- 迭代切换台：左侧完整长图（覆盖式）/ 右侧总思路 + 版本切换 ---- */
+        .iter-body { display: grid; grid-template-columns: 1fr 1.2fr; gap: 34px; align-items: start; }
+        @media (max-width: 900px) { .iter-body { grid-template-columns: 1fr; gap: 26px; } }
+
+        /* 左栏：长图完整展示，居中 */
+        .iter-left { display: flex; justify-content: center; }
+
+        .iter-side { display: flex; flex-direction: column; }
+
+        /* 3 列 × 2 行，占满右栏、居中 */
+        .iter-tabs {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 10px; margin: 18px 0 16px 0;
+        }
+        .iter-tab {
+            background: #111; border: 1px solid #222; border-radius: 8px;
+            font-family: inherit; cursor: pointer; transition: all .25s;
+            padding: 12px 8px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 3px;
+            color: #888; font-size: 0.86rem; font-weight: 500; text-align: center;
+        }
+        .iter-tab .t-num {
+            font-size: 0.63rem; font-weight: 700; letter-spacing: 1.5px;
+            color: #555; transition: color .25s;
+        }
+        .iter-tab:hover { border-color: #333; color: #bbb; }
+        .iter-tab.on {
+            border-color: #00ffcc; color: #00ffcc; background: rgba(0,255,204,.06);
+        }
+        .iter-tab.on .t-num { color: #00ffcc; }
+        @media (max-width: 420px) { .iter-tab { font-size: 0.78rem; padding: 10px 4px; } }
+
+        /* 左侧舞台：按当前图比例自适应高度，图完整显示不裁切 */
+        .iter-stage {
+            position: relative; border-radius: 10px; border: 1px solid #222;
+            background: #0b0b0b; overflow: hidden; cursor: zoom-in;
+            width: 100%; max-width: 440px;
+        }
+        /* 图区：高度跟着「当前这一版」的实际比例走，边框紧贴图底 */
+        .iter-view { position: relative; }
+        .iter-slide {
+            opacity: 0;
+            transition: opacity .4s ease;
+            pointer-events: none;
+        }
+        /* 非当前版：脱离文档流叠在上层，只做淡出 */
+        .iter-slide:not(.on) {
+            position: absolute; top: 0; left: 0; right: 0;
+        }
+        /* 当前版：在文档流里，撑开边框高度 */
+        .iter-slide.on { opacity: 1; pointer-events: auto; }
+        .iter-slide img { width: 100%; display: block; }
+        .iter-stage .iter-badge {
+            position: absolute; top: 12px; left: 12px; z-index: 4;
+            font-size: 0.68rem; font-weight: 700; letter-spacing: 1px;
+            background: rgba(0,0,0,.72); color: #00ffcc;
+            padding: 4px 10px; border-radius: 4px;
+        }
+        /* 按钮并入图底，不再绝对定位 → 始终贴着图片下沿 */
+        .iter-zoom {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; padding: 11px 0; cursor: pointer;
+            background: #101010; border-top: 1px solid #1e1e1e;
+            font-family: inherit; font-size: 0.76rem; color: #999;
+            transition: all .25s;
+        }
+        .iter-zoom:hover { color: #00ffcc; background: #131313; }
+        .iter-zoom svg { width: 13px; height: 13px; }
+
+        /* 右下：当前版本设计思路（随切换变化） */
+        .iter-note {
+            background: #121212; border: 1px solid #1e1e1e; border-radius: 10px;
+            padding: 24px 26px;
+        }
+        .iter-note .n-stage { font-size: 0.72rem; color: #00ffcc; letter-spacing: 2px; text-transform: uppercase; }
+        .iter-note h4 { font-size: 1.28rem; color: #fff; font-weight: 700; margin: 10px 0 16px 0; }
+        .iter-note p { font-size: 0.9rem; color: #a8a8a8; line-height: 1.9; margin-bottom: 14px; }
+        .iter-note .n-point { display: flex; gap: 11px; font-size: 0.86rem; color: #999; padding: 10px 0; border-bottom: 1px solid #191919; line-height: 1.7; }
+        .iter-note .n-point:last-child { border-bottom: none; }
+        .iter-note .n-point .dot-m { color: #00ffcc; flex-shrink: 0; }
+
+        /* 小屏：舞台限制宽度，避免长图过高；图片仍完整显示 */
+        @media (max-width: 900px) {
+            .iter-stage { max-width: 420px; margin: 0 auto; }
+        }
+
+        /* ================= 品牌方模版 ================= */
+        .tpl-row { display: grid; grid-template-columns: 1fr 1fr 1.1fr; gap: 22px; align-items: start; }
+        @media (max-width: 1000px) { .tpl-row { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 700px) { .tpl-row { grid-template-columns: 1fr; } }
+        .tpl-row figure { margin: 0; }
+        .tpl-row img { width: 100%; border-radius: 8px; border: 1px solid #222; display: block; }
+        .tpl-row .cap { font-size: 0.75rem; color: #777; margin-top: 9px; line-height: 1.5; }
+        .tpl-row .cap b { color: #ccc; }
+        /* 定稿标签：薄荷绿 */
+        .tpl-tag {
+            display: inline-block; font-size: 0.66rem; font-weight: 700;
+            letter-spacing: 1px; color: #00ffcc;
+            background: rgba(0,255,204,.1); border: 1px solid rgba(0,255,204,.45);
+            padding: 2px 8px; border-radius: 4px; margin-left: 8px;
+            vertical-align: 1px;
+        }
+        /* 列表：整体加薄荷绿描边 + 左侧绿色引导条 */
+        .tpl-list {
+            list-style: none; display: flex; flex-direction: column; justify-content: center;
+            text-align: center; background: #101010; border: 1px solid #1e1e1e;
+            border-radius: 10px; padding: 8px 22px;
+        }
+        .tpl-list li {
+            font-size: 1.02rem; color: #c2c2c2; padding: 16px 0;
+            border-bottom: 1px solid #1a1a1a; line-height: 1.75;
+            position: relative;
+        }
+        .tpl-list li:last-child { border-bottom: none; }
+        .tpl-list li b {
+            display: block; color: #00ffcc; font-weight: 600;
+            font-size: 1.02rem; margin-bottom: 5px;
+        }
+
+
+        /* ####################################################################
+           第二页专属样式：内容运营 · 微信小店 & 微信支付
+           ------------------------------------------------------------------
+           下面这些类只被第二页使用，改这里不会影响第一页。
+           色彩约定：橙色只出现在「作品图」里；页面 UI 一律用
+           薄荷绿 #00ffcc + 深灰阶，避免大面积橙色破坏黑绿基调。
+           #################################################################### */
+
+        /* ---- 通用：正文与说明 ---- */
+        .part-lead {
+            font-size: 0.88rem; color: #8a8a8a; line-height: 1.95;
+            max-width: 76ch; margin-top: 14px;
+        }
+        .part-lead b { color: #ddd; font-weight: 600; }
+
+        /* ---- Part 01：项目背景 ---- */
+        .bg-lead {
+            margin-top: 22px; border: 1px solid #1e1e1e; border-radius: 11px;
+            background: #101010; padding: 24px 28px 26px;
+            border-left: 3px solid #00ffcc;
+        }
+        .bg-lead .bg-tag {
+            font-size: 0.62rem; font-weight: 800; letter-spacing: 1.6px;
+            color: #00ffcc; margin-bottom: 14px; display: block;
+        }
+        .bg-lead .bg-line {
+            font-size: 1.02rem; color: #fff; font-weight: 700;
+            line-height: 1.7; margin-bottom: 16px;
+        }
+        .bg-lead p {
+            font-size: 0.86rem; color: #8a8a8a; line-height: 1.95;
+            margin-bottom: 12px;
+        }
+        .bg-lead p:last-child { margin-bottom: 0; }
+        .bg-lead p b { color: #ccc; font-weight: 600; }
+
+        .bg-steps {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 14px; margin-top: 22px;
+        }
+        .bg-step {
+            border: 1px solid #1e1e1e; border-radius: 11px;
+            background: #101010; padding: 18px 20px;
+            transition: border-color .3s, background .3s;
+        }
+        .bg-step:hover { border-color: #00ffcc; background: #131313; }
+        .bg-step .s-idx {
+            font-size: 0.6rem; font-weight: 800; letter-spacing: 1.6px;
+            color: #00ffcc; display: block; margin-bottom: 10px;
+        }
+        .bg-step h4 {
+            font-size: 0.95rem; color: #fff; font-weight: 700;
+            margin-bottom: 9px; line-height: 1.4;
+        }
+        .bg-step p { font-size: 0.79rem; color: #8a8a8a; line-height: 1.8; }
+
+        /* ---- Part 02 / 07：封面墙 ---- */
+        .cover-wall {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+            margin-top: 26px;
+        }
+        .cover-wall.cols-2 { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .cover-wall.cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .cover-wall.cols-4 { grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 16px; }
+        .cover-wall.spaced   { margin-top: 18px; }
+
+        .cover-frame {
+            width: 100%; overflow: hidden; position: relative;
+            border-radius: 10px; border: 1px solid #222;
+            background: #0a0a0a; transition: border-color .3s;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0;
+        }
+        .cover-frame:hover { border-color: #00ffcc; }
+        .cover-frame img {
+            max-width: 100%; max-height: 100%;
+            width: auto; height: auto;
+            object-fit: contain; display: block;
+            border-radius: 0;
+        }
+        .cover-frame.portrait { height: 300px; }
+        .cover-frame.portrait img {
+            width: 100%; height: 100%; object-fit: cover; object-position: top center;
+        }
+        .cover-frame.wide-2 { height: 200px; }
+        .cover-frame.wide   { height: 170px; }
+        .cover-frame.square { height: 260px; }
+        .cover-frame.square img { padding: 0; }
+        /* 横版宽图（Excel 导出的 4096 宽封面）：按比例缩放，不固定高 */
+        .cover-frame.auto { padding: 0; }
+        .cover-frame.auto img { width: 100%; height: auto; }
+
+        .cover-wall .cap {
+            font-size: 0.76rem; color: #777; line-height: 1.7; margin-top: 10px;
+        }
+        .cover-wall .cap b { color: #ccc; font-weight: 600; display: block; margin-bottom: 2px; }
+
+        /* ---- Part 03：标题条墙（4 行横向循环，奇偶行反向）---- */
+        /* 每行等高（行高固定，图按高度等比缩放），行内横向无缝循环，
+           第 1/3 行向左、第 2/4 行向右；悬停暂停。描边统一橙色。 */
+        .ttl-wall { margin-top: 20px; }
+        .ttl-row {
+            position: relative; height: 74px; overflow: hidden;
+            border-radius: 6px;
+        }
+        .ttl-row + .ttl-row { margin-top: 10px; }
+        .ttl-row .tr-track {
+            display: flex; align-items: center;
+            width: max-content; height: 100%;
+            animation: trLeft var(--dur, 60s) linear infinite;
+            will-change: transform;
+        }
+        .ttl-row.rev .tr-track { animation-name: trRight; }
+        .ttl-row:hover .tr-track { animation-play-state: paused; }
+        @keyframes trLeft  { from { transform: translateX(0); }    to { transform: translateX(-50%); } }
+        @keyframes trRight { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+        .ttl-row .tr-item {
+            flex: 0 0 auto; height: 100%; box-sizing: border-box; margin-right: 10px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 6px 9px; border: 1px solid rgba(255,97,70,.62);
+            border-radius: 5px; background: #0c0c0c; cursor: zoom-in;
+            transition: border-color .3s, box-shadow .3s, background .3s;
+        }
+        .ttl-row .tr-item:hover {
+            border-color: #FF6146; background: #131313;
+            box-shadow: 0 8px 22px rgba(0,0,0,.55);
+        }
+        .ttl-row .tr-item img { display: block; height: 100%; width: auto; border-radius: 2px; }
+        /* ---- Part 05A：小绿书 · 扑克牌式叠放（左右切换）---- */
+        /* 牌堆按比例定尺寸：舞台铺满容器，卡宽 = 舞台宽 × 58.82%，
+           相邻两张只错开卡宽的 14%（比原先紧 30%），所以卡可以做得更大 */
+        .qa-deck {
+            margin-top: 16px; border: 1px solid #1e1e1e; border-radius: 12px;
+            background: #0f0f0f; padding: 18px 16px 13px;
+        }
+        .qa-deck .qd-view { position: relative; }
+        .qa-deck .qd-stage { position: relative; width: 100%; }
+        .qa-deck .qd-stage::before { content: ''; display: block; padding-top: 78.43%; }
+        /* 叠放的牌：rel=0 在最前，rel 越大越靠右、越暗 */
+        .qa-deck .qd-card {
+            position: absolute; left: 0; top: 0;
+            width: 58.82%; height: 100%;
+            transform-origin: left center;
+            border-radius: 8px; overflow: hidden;
+            background: #141414; border: 1px solid #262626;
+            box-shadow: 10px 0 22px -10px rgba(0,0,0,.9);
+            cursor: pointer;
+            transition: transform .62s cubic-bezier(.22,.72,.2,1),
+                        box-shadow .42s, border-color .42s, filter .42s;
+            will-change: transform;
+        }
+        .qa-deck .qd-card img { display: block; width: 100%; height: 100%; object-fit: cover; }
+        .qa-deck .qd-card:not(.front) { filter: brightness(.66) saturate(.8); }
+        .qa-deck .qd-card:not(.front):hover { filter: brightness(.94) saturate(1); border-color: #3c3c3c; }
+        .qa-deck .qd-card.front {
+            border-color: rgba(0,255,204,.78);
+            box-shadow: 0 22px 44px -12px rgba(0,0,0,.8), 0 0 0 1px rgba(0,255,204,.2);
+        }
+        .qa-deck .qd-nav {
+            position: absolute; top: 50%; transform: translateY(-50%); z-index: 200;
+            width: 34px; height: 34px; border-radius: 50%;
+            border: 1px solid #2c2c2c; background: rgba(19,19,19,.92); color: #9a9a9a;
+            font-family: inherit; font-size: 1.05rem; line-height: 1;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: border-color .3s, color .3s, background .3s;
+        }
+        .qa-deck .qd-nav.prev { left: 0; }
+        .qa-deck .qd-nav.next { right: 0; }
+        .qa-deck .qd-nav:hover { border-color: #00ffcc; color: #00ffcc; background: #171717; }
+        .qa-deck .qd-foot {
+            display: flex; align-items: flex-end; gap: 18px;
+            margin-top: 18px; padding-top: 14px; border-top: 1px solid #1a1a1a;
+        }
+        .qa-deck .qd-meta { flex: 1 1 auto; min-width: 0; }
+        .qa-deck .qd-title { font-size: .86rem; color: #ddd; font-weight: 600; line-height: 1.5; margin-bottom: 3px; }
+        .qa-deck .qd-desc { font-size: .75rem; color: #777; line-height: 1.65; }
+        .qa-deck .qd-count { flex: none; font-size: .72rem; color: #5f5f5f; letter-spacing: .6px; }
+        .qa-deck .qd-count b { color: #00ffcc; font-weight: 700; }
+
+        /* ---- Part 05B：微信支付 · 方块平铺（全部展示 + 点击放大）---- */
+        .pay-mosaic {
+            display: grid; grid-template-columns: repeat(12, 1fr);
+            gap: 10px; margin-top: 14px; align-items: stretch;
+        }
+        .pay-mosaic .pm-tile {
+            position: relative; border: 1px solid #222; border-radius: 8px;
+            overflow: hidden; background: #fff; cursor: zoom-in;
+            transition: transform .34s cubic-bezier(.22,.72,.2,1), border-color .34s, box-shadow .34s;
+        }
+        .pay-mosaic .pm-tile span {
+            position: absolute; left: 0; bottom: 0;
+            background: rgba(10,10,10,.74); color: #cfcfcf;
+            font-size: .6rem; letter-spacing: .2px; padding: 3px 7px;
+            border-top-right-radius: 6px;
+        }
+        .pay-mosaic .pm-tile img { display: block; width: 100%; height: 100%; object-fit: cover; }
+        /* 高度对齐规则：小封面用 1:1 定住行高（自己不被拉伸），
+           大封面不给 aspect-ratio、只跟着行拉伸，两者上下边永远齐平。
+           图用 cover 填满，2.09 与素材本身的 2.15 差 3%，裁切看不出来。 */
+        .pay-mosaic .pm-head { grid-column: span 8; min-height: 88px; }
+        .pay-mosaic .pm-sq   { grid-column: span 4; aspect-ratio: 1 / 1; align-self: start; }
+        .pay-mosaic .pm-tile:hover {
+            transform: translateY(-3px); border-color: #FF6146;
+            box-shadow: 0 12px 28px rgba(0,0,0,.5); z-index: 2;
+        }
+        /* 网格里的说明块：把这一组讲清楚，同时补上栏位 */
+        .pay-mosaic .pm-note {
+            grid-column: span 8; align-self: start;
+            padding: 12px 14px; border-radius: 8px;
+            border: 1px solid #1e1e1e; background: #101010;
+        }
+        .pay-mosaic .pm-note h5 {
+            margin: 0 0 6px; font-size: .75rem; font-weight: 800; color: #e8e8e8;
+        }
+        .pay-mosaic .pm-note p {
+            margin: 0; font-size: .69rem; line-height: 1.72; color: #8a8a8a;
+        }
+        .pay-mosaic .pm-note p b { color: #c9c9c9; font-weight: 700; }
+
+        /* ---- Part · 封面版式 · 双图结构拆解 ---- */
+        .duo-anat {
+            margin-top: 22px; border: 1px solid #1e1e1e; border-radius: 11px;
+            background: #101010; overflow: hidden;
+        }
+        .duo-anat .da-cap {
+            font-size: 0.72rem; color: #777; padding: 10px 18px;
+            border-bottom: 1px solid #1a1a1a; letter-spacing: .4px;
+        }
+        .duo-anat .da-body { position: relative; }
+        .duo-anat img { width: 100%; display: block; }
+        /* 双图分区：头条封面 70% / 小封面 30%（投标书 (1080+460)×460 公式） */
+        .duo-anat .da-zones {
+            position: absolute; inset: 0;
+            display: grid; grid-template-columns: 70% 30%;
+        }
+        .duo-anat .da-zone {
+            position: relative;
+            border-right: 1px dashed rgba(0,255,204,.85);
+        }
+        .duo-anat .da-zone:last-child { border-right: none; }
+        .duo-anat .da-zone span {
+            position: absolute; left: 10px; bottom: 10px;
+            font-size: 0.62rem; font-weight: 800; letter-spacing: .8px;
+            color: #0d0d0d; background: #00ffcc;
+            padding: 4px 9px; border-radius: 4px; white-space: nowrap;
+        }
+
+        /* ============ Part：其他内容产出（按账号分三栏） ============ */
+        .out-cols {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 28px; margin-top: 26px; align-items: start;
+        }
+        .out-col { min-width: 0; }
+        /* 右栏上下两组之间加一条分隔 */
+        .out-sub + .out-sub {
+            margin-top: 24px; padding-top: 20px; border-top: 1px solid #191919;
+        }
+        .out-col .ob-tag {
+            display: inline-block; font-size: .6rem; font-weight: 800;
+            letter-spacing: 1.4px; color: #00ffcc;
+            border: 1px solid rgba(0,255,204,.32); border-radius: 999px;
+            padding: 3px 9px; margin-bottom: 10px;
+        }
+        .out-col .ob-title {
+            margin: 0 0 8px; font-size: 1.02rem; font-weight: 800;
+            color: #f2f2f2; letter-spacing: .3px;
+        }
+        .out-col .ob-desc {
+            margin: 0; font-size: .79rem; line-height: 1.78; color: #8a8a8a;
+        }
+        .out-col .ob-desc b { color: #cfcfcf; font-weight: 700; }
+        .duo-anat .da-notes {
+            display: grid; grid-template-columns: 70% 30%;
+            border-top: 1px solid #1a1a1a;
+        }
+        .duo-anat .da-notes div {
+            padding: 13px 16px; font-size: 0.73rem; color: #7d7d7d;
+            line-height: 1.7; border-right: 1px solid #1a1a1a;
+        }
+        .duo-anat .da-notes div:last-child { border-right: none; }
+        .duo-anat .da-notes b { color: #ccc; display: block; margin-bottom: 3px; font-size: 0.75rem; }
+
+        /* ---- Part 06：规范细则卡片 ---- */
+        .spec-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 14px; margin-top: 22px;
+        }
+        .spec-card {
+            border: 1px solid #1e1e1e; border-radius: 11px;
+            background: #101010; padding: 18px 20px 20px;
+            transition: border-color .3s, background .3s;
+        }
+        .spec-card:hover { border-color: #00ffcc; background: #131313; }
+        .spec-card .s-tag {
+            font-size: 0.6rem; font-weight: 800; letter-spacing: 1.6px;
+            color: #00ffcc; display: block; margin-bottom: 10px;
+        }
+        .spec-card h4 {
+            font-size: 0.95rem; color: #fff; font-weight: 700;
+            margin-bottom: 10px; line-height: 1.4;
+        }
+        .spec-card p { font-size: 0.8rem; color: #8a8a8a; line-height: 1.8; }
+        .spec-card p b { color: #bbb; font-weight: 600; }
+        .spec-bar {
+            height: 44px; border-radius: 7px; margin-bottom: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.72rem; font-weight: 700; letter-spacing: .5px;
+        }
+        /* 方向示例条：这是「作品规范示意」，用低饱和的同色系底 + 描边表达，
+           不做整块实橙，避免非展示区出现大面积橙色 */
+        .spec-bar.on-orange {
+            background: rgba(255,97,70,.16); color: #ff8a72;
+            border: 1px solid rgba(255,97,70,.5);
+        }
+        .spec-bar.on-white  {
+            background: #f4f4f4; color: #e2543c;
+            border: 2px solid #f0a593;
+        }
+        .spec-bar.on-block  {
+            background: #f4f4f4; color: #e2543c;
+            border: 2px solid transparent; position: relative; overflow: hidden;
+        }
+        .spec-bar.on-block::after {
+            content: ''; position: absolute; right: 0; top: 0; bottom: 0;
+            width: 38%; background: rgba(255,97,70,.34);
+        }
+        .spec-bar.on-block span { position: relative; z-index: 1; margin-right: 30%; }
+
+        /* ---- Part 06：封面体系基准（原基准表，删掉咖啡/金）---- */
+        .col-table-wrap {
+            overflow-x: auto; border: 1px solid #1e1e1e; border-radius: 11px;
+            margin-top: 20px;
+        }
+        .col-table { width: 100%; border-collapse: collapse; min-width: 640px; }
+        /* 表头按用户长期规范：珊瑚橙 #FF6D55 */
+        .col-table th {
+            background: #FF6D55; color: #fff;
+            font-size: 0.82rem; font-weight: 700; text-align: left;
+            padding: 13px 18px; letter-spacing: .5px;
+        }
+        .col-table td {
+            padding: 13px 18px; border-bottom: 1px solid #1c1c1c;
+            color: #999; font-size: 0.84rem;
+        }
+        .col-table td:first-child { color: #ddd; font-size: 0.86rem; font-weight: 600; }
+        .col-table td.center { text-align: center; }
+        .col-table tr:last-child td { border-bottom: none; }
+        .col-table-note {
+            font-size: 0.76rem; color: #666; margin-top: 12px; line-height: 1.7;
+        }
+        /* 色块示意：用真实色块表达「色系」 */
+        .swatch { display: inline-flex; gap: 5px; vertical-align: middle; }
+        .swatch i {
+            width: 15px; height: 15px; border-radius: 4px;
+            display: block; border: 1px solid rgba(255,255,255,.14);
+        }
+        .swatch.solid i { border-color: transparent; }
+        .col-table td:first-child .swatch { margin-left: 9px; }
+
+        /* ---- Part 08：定调话术 ---- */
+        .quote-block {
+            margin-top: 22px; border: 1px solid #1e1e1e; border-radius: 11px;
+            background: #101010; border-left: 3px solid #00ffcc;
+            padding: 24px 28px 26px;
+        }
+        .quote-block .q-label {
+            font-size: 0.62rem; font-weight: 800; letter-spacing: 1.6px;
+            color: #00ffcc; margin-bottom: 16px;
+        }
+        .quote-block .q-lead {
+            font-size: 1.06rem; color: #fff; font-weight: 700;
+            line-height: 1.7; margin-bottom: 20px;
+        }
+        .quote-block .q-list {
+            list-style: none; margin: 0 0 20px; padding: 16px 0;
+            border-top: 1px solid #1c1c1c; border-bottom: 1px solid #1c1c1c;
+        }
+        .quote-block .q-list li {
+            font-size: 0.86rem; color: #8a8a8a; line-height: 2;
+            padding-left: 18px; position: relative;
+        }
+        .quote-block .q-list li::before {
+            content: ''; position: absolute; left: 0; top: 13px;
+            width: 5px; height: 5px; border-radius: 50%; background: #00ffcc;
+        }
+        .quote-block .q-list li b { color: #ddd; font-weight: 600; }
+        .quote-block .q-foot { font-size: 0.86rem; color: #999; line-height: 1.9; }
+
+        .slogan-row {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 14px; margin-top: 16px;
+        }
+        .slogan-cell {
+            border: 1px solid #1e1e1e; border-radius: 11px;
+            background: #101010; padding: 18px 20px;
+            transition: border-color .3s, background .3s;
+        }
+        .slogan-cell:hover { border-color: #00ffcc; background: #131313; }
+        .slogan-cell .sl-tag {
+            font-size: 0.6rem; font-weight: 800; letter-spacing: 1.5px;
+            color: #00ffcc; display: block; margin-bottom: 9px;
+        }
+        .slogan-cell p { font-size: 0.95rem; color: #ddd; font-weight: 600; line-height: 1.6; }
+
+        /* ---- 署名块 ---- */
+        .credit-block {
+            margin-top: 18px; border: 1px solid #1e1e1e; border-radius: 11px;
+            background: #0f0f0f; padding: 20px 24px;
+        }
+        .credit-block .cr-tag {
+            font-size: 0.6rem; font-weight: 800; letter-spacing: 1.6px;
+            color: #00ffcc; display: block; margin-bottom: 11px;
+        }
+        .credit-block p {
+            font-size: 0.84rem; color: #8a8a8a; line-height: 1.95;
+        }
+        .credit-block p b { color: #ccc; font-weight: 600; }
+
+        /* 署名小字（开篇内联版） */
+        .credit-inline {
+            margin-top: 22px; padding: 14px 0 0;
+            border-top: 1px solid #1a1a1a;
+            font-size: 0.72rem; color: #5a5a5a; line-height: 1.85;
+            letter-spacing: .2px;
+        }
+
+        /* ---- 页头 · 账号矩阵定位条（交代这一页是谁的产出）---- */
+        .acct-row {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 12px; margin: 22px 0 56px;
+        }
+        .acct-cell {
+            border: 1px solid #1e1e1e; border-radius: 11px;
+            background: #101010; padding: 17px 19px 18px;
+            border-top: 3px solid #333;
+        }
+        .acct-cell .ac-name {
+            display: block; font-size: .84rem; font-weight: 800;
+            color: #f0f0f0; margin-bottom: 6px;
+        }
+        .acct-cell .ac-sub {
+            font-size: .73rem; color: #7d7d7d; line-height: 1.72;
+        }
+        .acct-cell .ac-color {
+            display: block; margin-top: 9px; font-size: .64rem;
+            letter-spacing: .5px; color: #6b6b6b;
+        }
+        .acct-cell.a-orange { border-top-color: #FF6146; }
+        .acct-cell.a-teal   { border-top-color: #00AF96; }
+        .acct-cell.a-green  { border-top-color: #25A960; }
+
+        /* ---- 第二页响应式 ---- */
+        @media (max-width: 900px) {
+            .bg-steps { grid-template-columns: 1fr; }
+            .cover-wall,
+            .cover-wall.cols-2,
+            .cover-wall.cols-3,
+            .cover-wall.cols-4 { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .spec-grid,
+            .slogan-row { grid-template-columns: 1fr; }
+            .acct-row { grid-template-columns: 1fr; }
+            .ttl-row { height: 62px; }
+            .duo-anat .da-notes div { padding: 11px 12px; font-size: 0.7rem; }
+        }
+        @media (max-width: 560px) {
+            .cover-wall,
+            .cover-wall.cols-2,
+            .cover-wall.cols-3,
+            .cover-wall.cols-4 { grid-template-columns: 1fr; }
+            .ttl-row { height: 50px; }
+            .qa-deck { padding: 16px 12px 12px; }
+            .qa-deck .qd-row { gap: 8px; }
+            .qa-deck .qd-nav { width: 30px; height: 30px; font-size: .95rem; }
+            .ttl-item { grid-template-columns: 30px 1fr; gap: 10px; padding: 9px 12px; }
+            /* 窄屏下双图标注会挤，改为隐藏标记只留说明 */
+            .duo-anat .da-zones { display: none; }
+            .duo-anat .da-notes { grid-template-columns: 1fr; }
+            .duo-anat .da-notes div { border-right: none; border-bottom: 1px solid #1a1a1a; }
+        }
+
+        /* ====================================================================
+           第二页专属样式结束
+           ==================================================================== */
+
+
+        /* ================= 灯箱 ================= */
+        .lightbox {
+            display: none; position: fixed; inset: 0; z-index: 999;
+            background: rgba(0,0,0,.95); padding: 50px 20px 40px 20px; overflow-y: auto;
+        }
+        .lightbox.on { display: block; }
+        .lightbox img { display: block; margin: 0 auto; max-width: 880px; width: 100%; border-radius: 8px; }
+        .lb-close {
+            position: fixed; top: 14px; right: 22px; z-index: 1000;
+            font-size: 1.7rem; color: #888; cursor: pointer; line-height: 1;
+            background: none; border: none; font-family: inherit;
+        }
+        .lb-close:hover { color: #00ffcc; }
+        .lb-hint { text-align: center; color: #555; font-size: 0.74rem; margin-top: 16px; }
+        /* ================= 页面切换：横向滑动 ================= */
+        /* overflow:hidden 把裁剪边界定在导航栏这条线上：
+           页面只在这个区域内滑动，不会盖到 / 穿过左侧导航栏。
+           非当前页有 visibility:hidden 兜底，所以这里开 hidden 不会再出叠字。 */
+        /* 用 clip 不用 hidden：hidden 会成为滚动容器，里面的 position:sticky 会失效 */
+        .pane-viewport { position: relative; overflow: clip; }
+        .pane {
+            width: 100%; overflow-x: clip;
+            transition: transform .92s cubic-bezier(.22,.72,.2,1), opacity .62s ease;
+            will-change: transform, opacity;
+        }
+        /* 非当前页：绝对定位叠住，完全隐藏，不占高度也不绘制 */
+        .pane:not(.on) {
+            position: absolute; top: 0; left: 0; right: 0;
+            pointer-events: none;
+            visibility: hidden;
+        }
+        /* 切出方向：向左滑出 / 向右滑出（整幅位移） */
+        .pane.off-left  { transform: translateX(-100%); opacity: 0; }
+        .pane.off-right { transform: translateX(100%);  opacity: 0; }
+        /* 正在动画中的页面：需要可见才能看到位移 */
+        .pane.on, .pane.moving { visibility: visible; }
+        .pane.on { transform: translateX(0); opacity: 1; }
+        /* 滑入起始位（配合 JS 用双帧 rAF 触发动效） */
+        .pane.enter-right { transform: translateX(100%);  opacity: 0; }
+        .pane.enter-left  { transform: translateX(-100%); opacity: 0; }
+
+        @media (max-width: 900px) {
+            .proj-item { padding: 12px 15px; }
+            .proj-item .pi-name { font-size: 0.8rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="layout">
+    <!-- ================= 左侧固定导航 ================= -->
+    <nav class="sidenav">
+        <div class="nav-brand">Portfolio</div>
+
+        <!-- 项目切换：手风琴，点击展开 / 收起（抽屉内容由 JS 按 chapterData 生成） -->
+        <div class="proj-switch">
+
+            <div class="proj-item active" data-pane="0">
+                <div class="pi-head" role="button" tabindex="0">
+                    <span class="pi-idx-wrap">
+                        <span class="pi-idx">PROJECT 01</span>
+                        <span class="pi-name">WorkBuddy 生态发布会</span>
+                    </span>
+                    <span class="pi-arrow"></span>
+                </div>
+                <div class="proj-drawer">
+                    <ul></ul>
+                </div>
+            </div>
+
+            <div class="proj-item" data-pane="1">
+                <div class="pi-head" role="button" tabindex="0">
+                    <span class="pi-idx-wrap">
+                        <span class="pi-idx">PROJECT 02</span>
+                        <span class="pi-name">微信支付 × 微信小店 · 跨账号内容运营</span>
+                    </span>
+                    <span class="pi-arrow"></span>
+                </div>
+                <div class="proj-drawer">
+                    <ul></ul>
+                </div>
+            </div>
+
+        </div>
+
+        <a href="index.html" class="back-btn">← 返回作品集主页</a>
+    </nav>
+    <div class="content">
+        <div class="pane-viewport">
+
+
+        <!-- ================================================
+             第一页：WorkBuddy 生态发布会
+             内容改这里；样式在 <style> 的「第一页」分节
+             ================================================ -->
+        <div class="pane on" data-pane-index="0">
+
+
+            <!-- 头部 -->
+            <div class="header">
+                <div>
+                    <h1>腾讯 WorkBuddy <span>生态发布会</span></h1>
+                    <div class="sub">从创意概念到视觉落地的完整链路 / 倒计时海报系列 · 品牌方联合模版 · 一图读懂长图</div>
+                </div>
+                <div class="sub-badge">创意策划 · 视觉执行 · 物料设计</div>
+            </div>
+
+            <!-- 简介 -->
+            <div class="intro">
+                <div>
+                    <p class="intro-lead">
+                        参与腾讯 WorkBuddy 生态发布会传播物料的
+                        <b>创意策划与视觉执行</b>，负责以下三部分工作。
+                    </p>
+
+                    <div class="duty-list">
+                        <div class="duty">
+                            <span class="d-idx">01</span>
+                            <span class="d-txt"><b>倒计时海报系列</b>　3 天倒计时的创意深化与设计执行，从参考方向对接到多轮改稿定稿。</span>
+                        </div>
+                        <div class="duty">
+                            <span class="d-idx">02</span>
+                            <span class="d-txt"><b>品牌方联合模版</b>　供 30+ 生态伙伴自行填图的联合模版的产出与两版方向提案。</span>
+                        </div>
+                        <div class="duty">
+                            <span class="d-idx">03</span>
+                            <span class="d-txt"><b>「一图读懂」长图</b>　发布会全部信息的浓缩长图，从结构框架到视觉定稿的设计执行。</span>
+                        </div>
+                    </div>
+
+                    <p class="intro-foot">
+                        项目由团队协作完成，本人承担其中创意与视觉部分的具体工作。
+                    </p>
+                </div>
+                <div class="intro-meta">
+                    <div class="meta-row">
+                        <span>Project</span>
+                        <strong>腾讯 WorkBuddy 生态发布会</strong>
+                    </div>
+                    <div class="meta-row">
+                        <span>Role</span>
+                        <strong>创意策划 / 海报设计 / 物料执行</strong>
+                    </div>
+                    <div class="meta-row">
+                        <span>Date</span>
+                        <strong>2026.08</strong>
+                    </div>
+                    <div class="meta-row">
+                        <span>Credit</span>
+                        <strong style="font-weight:500; color:#999;">主视觉 KV 由腾讯官方提供，仅作视觉基准；倒计时海报系列、品牌方联合模版与「一图读懂」长图为团队协作产出，本人负责其中创意深化与视觉执行部分的工作。</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= Part 01 ================= -->
+            <div class="part" id="p1">
+                <div class="part-head">
+                    <div class="part-num">01</div>
+                    <div class="part-title-wrap">
+                        <div class="part-title">主视觉与产出</div>
+                        <div class="part-rule"></div>
+                    </div>
+                </div>
+
+                <!-- 第一行：左图 右说明 -->
+                <div class="kv-line1">
+                    <figure>
+                        <img src="image/wb/kv.jpg" alt="WorkBuddy 生态发布会主视觉" class="zoomable"
+                             onclick="openLb('image/wb/kv.jpg')">
+                    </figure>
+                    <div class="kv-note">
+                        <div class="label">Key Visual / 整体视觉基准</div>
+                        <h3>发布会主视觉，所有延伸物料的起点</h3>
+                        <p>
+                            这张主视觉确定了发布会的整体调性：浅色底、半透明玻璃质感、柔和的炫彩光效。
+                            它不作为我们的产出，但它是后续全部物料的设计基准——倒计时海报、品牌方模版、
+                            长图的配色与材质语言都从它延伸而来。
+                        </p>
+                        <div class="credit">
+                            主视觉 KV：<span class="dim">腾讯官方提供，仅作视觉基准</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第二行：我们的产出（3 海报 + 1 长图） -->
+                <div class="output-head">
+                    <h3>我们的产出</h3>
+                    <div class="oh-sub">倒计时海报 3 张 + 「一图读懂」长图 1 张 · 点击查看大图</div>
+                </div>
+
+                <div class="output-grid">
+                    <figure>
+                        <img src="image/wb/d3_fin.jpg" alt="倒计时3天定稿" class="zoomable"
+                             onclick="openLb('image/wb/d3_fin.jpg')">
+                        <div class="cap"><b>倒计时 3 天</b>　开放 · 让 Agent，无边界</div>
+                    </figure>
+                    <figure>
+                        <img src="image/wb/d2_fin.jpg" alt="倒计时2天定稿" class="zoomable"
+                             onclick="openLb('image/wb/d2_fin.jpg')">
+                        <div class="cap"><b>倒计时 2 天</b>　连接 · 让任务，不断线</div>
+                    </figure>
+                    <figure>
+                        <img src="image/wb/d1_fin.jpg" alt="倒计时1天定稿" class="zoomable"
+                             onclick="openLb('image/wb/d1_fin.jpg')">
+                        <div class="cap"><b>倒计时 1 天</b>　共创 · 新生态，Build Together</div>
+                    </figure>
+                    <figure>
+                        <div class="thumb-long zoomable" onclick="openLb('image/wb/long_fin.jpg')">
+                            <img src="image/wb/long_fin_916.jpg" alt="一图读懂长图定稿">
+                        </div>
+                        <div class="cap"><b>一图读懂长图</b>　4600 × 14923 px · 点击查看完整长图</div>
+                    </figure>
+                </div>
+            </div>
+
+            <!-- ================= Part 02 ================= -->
+            <div class="part" id="p2">
+                <div class="part-head">
+                    <div class="part-num">02</div>
+                    <div class="part-title-wrap">
+                        <div class="part-title">创意来源 · 参考收集与方向选定</div>
+                        <div class="part-rule"></div>
+                    </div>
+                </div>
+                <p class="part-lead">
+                    创意并非凭空而来。在动笔之前，我们先<strong>收集了过往发布会的主视觉与海报作为参考池</strong>，
+                    供客户比对与选择，方向确定之后才进入深化迭代。
+                </p>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;" class="ref-two">
+                    <div style="background:#121212; border:1px solid #1e1e1e; border-radius:10px; padding:24px;">
+                        <h4 style="font-size:0.95rem; color:#fff; margin-bottom:14px; font-weight:600;">参考收集 → 客户选定 → 深化迭代</h4>
+                        <p style="font-size:0.85rem; color:#999; margin-bottom:14px;">创意流程分三步推进，方向的决定权在客户方：</p>
+                        <ol style="margin-left:18px;">
+                            <li style="font-size:0.85rem; color:#999; margin-bottom:11px; padding-left:4px;">
+                                <b style="color:#ddd;">建立参考池</b>　收集过往发布会的主视觉 Keynote 与系列海报，
+                                按「视觉风格 / 材质语言 / 信息层级」分类整理，形成可供比对的参考集。
+                            </li>
+                            <li style="font-size:0.85rem; color:#999; margin-bottom:11px; padding-left:4px;">
+                                <b style="color:#ddd;">方向提案与选定</b>　将参考集提交客户，逐一向客户说明各方向的视觉特征与适用场景。
+                                客户最终选定<b style="color:#00ffcc;">玻璃炫彩光效方向</b>——半透明玻璃材质 + 柔和的炫彩折射。
+                            </li>
+                            <li style="font-size:0.85rem; color:#999; padding-left:4px;">
+                                <b style="color:#ddd;">按方向深化</b>　方向确定后才进入具体视觉深化：把玻璃质感落到 WorkBuddy 机器人主体、
+                                生态元素与倒计时信息上，形成三张系列海报。
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div style="background:#121212; border:1px solid #1e1e1e; border-radius:10px; padding:24px;">
+                        <h4 style="font-size:0.95rem; color:#fff; margin-bottom:14px; font-weight:600;">Brief 中的三条故事线</h4>
+                        <p style="font-size:0.85rem; color:#999; margin-bottom:16px;">
+                            参考方向确定后，创意落到发布会自身的叙事上。倒计时 3 天对应三条故事线：
+                        </p>
+                        <div style="margin-bottom:15px;">
+                            <div style="font-size:0.84rem; color:#00ffcc; margin-bottom:5px;">用户 × 开放 × 效率</div>
+                            <div style="font-size:0.82rem; color:#888;">呼应「让 Agent，无边界」</div>
+                        </div>
+                        <div style="margin-bottom:15px;">
+                            <div style="font-size:0.84rem; color:#00ffcc; margin-bottom:5px;">伙伴 × 连接 × 增长</div>
+                            <div style="font-size:0.82rem; color:#888;">呼应「让任务，不断线」</div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.84rem; color:#00ffcc; margin-bottom:5px;">共创 × 未来 × AgentOS</div>
+                            <div style="font-size:0.82rem; color:#888;">呼应「新生态，Build Together」</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= Part 03：故事线 + 弧形轮播 ================= -->
+            <div class="part" id="p3">
+                <div class="part-head">
+                    <div class="part-num">03</div>
+                    <div class="part-title-wrap">
+                        <div class="part-title">故事线与视觉迭代</div>
+                        <div class="part-rule"></div>
+                    </div>
+                </div>
+                <p class="part-lead">
+                    每条故事线落到<strong>具体的画面动作</strong>，并经历「初稿 → 修改 → 定稿」多轮打磨。
+                    左右联动查看：切换天数看故事线与画面，滑动查看三个版本的演变。
+                </p>
+
+                <div class="carousel-outer">
+                    <!-- 大号 DAY 切换：整个框顶部通栏居中 -->
+                    <div class="day-switch">
+                        <button class="day-btn on" onclick="goDay(0, this)">DAY 3</button>
+                        <span class="day-sep">/</span>
+                        <button class="day-btn" onclick="goDay(1, this)">DAY 2</button>
+                        <span class="day-sep">/</span>
+                        <button class="day-btn" onclick="goDay(2, this)">DAY 1</button>
+                    </div>
+
+                    <div class="carousel-wrap">
+                        <!-- 左：故事线 -->
+                        <div class="story-panel">
+                            <div class="story-day" id="s-day">倒数第 3 天</div>
+                            <h3 class="story-h" id="s-h">开放 · 无边界</h3>
+                            <div class="story-kw" id="s-kw">「让 Agent，无边界」</div>
+                            <p class="story-p" id="s-p">
+                                WorkBuddy 双臂展开向前遨游，身下地板随双手方向逐节点亮边界，
+                                地板上铺开技能、专家、连接器、灵感案例等生态元素。
+                            </p>
+                            <div class="story-formula" id="s-f">故事线：用户 × 开放 × 效率</div>
+                        </div>
+
+                        <!-- 右：弧形轮播 -->
+                        <div class="carousel">
+                            <div class="stage" id="stage">
+                                <!-- slides 由 JS 注入 -->
+                            </div>
+                            <div class="carousel-ctrl">
+                                <button class="ctrl-btn" onclick="prevSlide()">‹</button>
+                                <div class="dots" id="dots"></div>
+                                <button class="ctrl-btn" onclick="nextSlide()">›</button>
+                            </div>
+                            <div class="carousel-cap" id="cap"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= Part 04 ================= -->
+            <div class="part" id="p4">
+                <div class="part-head">
+                    <div class="part-num">04</div>
+                    <div class="part-title-wrap">
+                        <div class="part-title">品牌方联合模版</div>
+                        <div class="part-rule"></div>
+                    </div>
+                </div>
+                <p class="part-lead">
+                    除官号发布的 3 张海报外，另产出供各生态伙伴自行填图的<strong>联合模版</strong>，
+                    使 30+ 品牌方在统一视觉语言下同步发声。模版共提供两版方向供客户选择。
+                </p>
+
+                <div class="tpl-row">
+                    <figure>
+                        <img src="image/wb/brand_tpl.jpg" alt="品牌方模版 方案一" class="zoomable"
+                             onclick="openLb('image/wb/brand_tpl.jpg')">
+                        <div class="cap"><b>方案一 · 流光版</b><span class="tpl-tag">定稿</span>　底部薄荷绿流线波浪，主图区留白。信息层级更丰富，适配品牌方自定义主图。</div>
+                    </figure>
+                    <figure>
+                        <img src="image/wb/brand_alt.jpg" alt="品牌方模版 方案二" class="zoomable"
+                             onclick="openLb('image/wb/brand_alt.jpg')">
+                        <div class="cap"><b>方案二 · 极简版</b><span class="tpl-tag" style="color:#999; background:#161616; border-color:#2a2a2a;">备选</span>　保留浅色底与流线，右下方加入立体 WorkBuddy 字标。画面更干净，字号更大。</div>
+                    </figure>
+                    <div>
+                        <ul class="tpl-list">
+                            <li><b>顶部主图区</b>大面积留白，品牌方自行替换产品主图</li>
+                            <li><b>品牌联合露出</b>WorkBuddy logo 与品牌 logo 并列署名</li>
+                            <li><b>文案位</b>自定义文案，体现品牌自身产品特性</li>
+                            <li><b>底部固定元素</b>「WorkBuddy 正在连接 XX（品牌）」<br>「Buddy 们，9 月 2 日见」+ 直播二维码</li>
+                            <li><b>视觉基底</b>沿用发布会浅色 KV 的薄荷绿渐变与流线</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= Part 05：长图迭代 ================= -->
+            <div class="part" id="p5">
+                <div class="part-head">
+                    <div class="part-num">05</div>
+                    <div class="part-title-wrap">
+                        <div class="part-title">「一图读懂」长图</div>
+                        <div class="part-rule"></div>
+                    </div>
+                </div>
+                <p class="part-lead">
+                    将发布会全部信息浓缩为一张长图，用于会后传播与资料留档。
+                    长图从初稿到定稿共经历<strong>六个版本</strong>，先与客户定框架，再逐版修改，最终定白底。
+                    左侧逐版切换查看画面，右侧为设计思路。
+                </p>
+
+                <div class="iter-body">
+                    <!-- 左：六个版本（覆盖式叠放，完整长图） -->
+                    <div class="iter-left">
+                        <div class="iter-stage" id="iterStage"></div>
+                    </div>
+
+                    <!-- 右：总设计思路（固定）+ 版本切换 + 当前版本思路 -->
+                    <div class="iter-side">
+                        <div class="long-note">
+                            <h3>设计思路</h3>
+                            <p>
+                                长图承担会后传播与资料留档两种用途，信息密度远高于海报。
+                                因此采用<strong>「结构先行」</strong>的做法：先把信息层级搭清楚，再进入视觉填充，
+                                避免边画边改结构导致返工。
+                            </p>
+                            <p>结构上把发布会拆成五个信息层，由主到次纵向排布：</p>
+                            <div class="kv-line"><b>第一层</b>发布会主标题、时间地点</div>
+                            <div class="kv-line"><b>第二层</b>一个 AgentOS 底座 + 开放路径</div>
+                            <div class="kv-line"><b>第三层</b>生态开放体系（能力 / 生态 / 场景）</div>
+                            <div class="kv-line"><b>第四层</b>硬件与软件伙伴墙</div>
+                            <div class="kv-line"><b>第五层</b>合作方数据与结语</div>
+                            <div style="margin-top:14px; font-size:0.79rem; color:#777;">
+                                全图规格 <b style="color:#ccc;">4600 × 14923 px</b>，用于公众号长图与资料存档。
+                            </div>
+                        </div>
+
+                        <div class="iter-tabs" id="iterTabs"></div>
+                        <div class="iter-note" id="iterNote"></div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /pane 0 -->
+
+<div class="pane" data-pane-index="1">
+
+<!-- 头部 -->
+            <div class="header">
+                <div>
+                    <h1>内容运营 <span>·</span> 微信小店 <span>&amp;</span> 微信支付</h1>
+                    <div class="sub">栏目视觉体系 · 封面与标题条产出 · 图文长内容</div>
+                </div>
+                <div class="sub-badge">视觉设计 · 内容运营</div>
+            </div>
+
+<!-- 简介 -->
+            <div class="intro">
+                <div>
+                    <p class="intro-lead">
+                        微信小店日常营销项目下的公众号内容运营与视觉设计：
+                        参与<strong>微信小店带货者助手</strong>的栏目视觉体系搭建、
+                        <b>封面与栏目标题条产出</b>，以及图文长内容的视觉落地。
+                    </p>
+
+                    <div class="duty-list">
+                        <div class="duty">
+                            <span class="d-idx">01</span>
+                            <span class="d-txt"><b>栏目视觉方向</b>　与设计老师共同研究推文内容，产出关键词与关键元素，据此刻画各栏目色系与画面方向。</span>
+                        </div>
+                        <div class="duty">
+                            <span class="d-idx">02</span>
+                            <span class="d-txt"><b>封面与标题条设计</b>　确定封面的双图结构（头条封面 + 转发小封面）与标题排版规范，并产出栏目标题条。</span>
+                        </div>
+                        <div class="duty">
+                            <span class="d-idx">03</span>
+                            <span class="d-txt"><b>图文与配图产出</b>　承接问答长图、产业带经营案例等图文内容的视觉与配图，其中服务商经营案例配图为本人使用 AI 生成。</span>
+                        </div>
+                    </div>
+
+                    <p class="intro-foot">
+                        项目由团队协作完成，本人承担其中视觉设计与内容运营部分的具体工作。
+                    </p>
+                </div>
+                <div class="intro-meta">
+                    <div class="meta-row">
+                        <span>Project</span>
+                        <strong>微信小店日常营销 · 公众号内容运营</strong>
+                    </div>
+                    <div class="meta-row">
+                        <span>Account</span>
+                        <strong>微信小店带货者助手</strong>
+                    </div>
+                    <div class="meta-row">
+                        <span>Role</span>
+                        <strong>栏目视觉方向 / 封面与标题条设计 / 图文配图</strong>
+                    </div>
+                    <div class="meta-row">
+                        <span>Date</span>
+                        <strong>2026.08 – 2026.09</strong>
+                    </div>
+                    <div class="meta-row">
+                        <span>Credit</span>
+                        <strong class="meta-credit">栏目视觉方向由本人主导，与设计老师共同研究产出；栏目标题文案由本人设计；服务商经营案例配图由本人使用 AI 生成。</strong>
+                    </div>
+                </div>
+            </div>
+
+<!-- 账号矩阵定位：一眼看出这一页是谁的产出 -->
+            <div class="acct-row">
+                <div class="acct-cell a-orange">
+                    <span class="ac-name">微信小店带货者助手</span>
+                    <span class="ac-sub">面向 B 端带货达人 / 机构。本页的栏目视觉体系、封面、标题条、小绿书长图文都出自这个号。</span>
+                    <span class="ac-color">主色 橘红 #FF6146 · 辅色 深灰 #333333 · 底 暖白 #FFF5F0</span>
+                </div>
+                <div class="acct-cell a-teal">
+                    <span class="ac-name">微信小店服务商助手</span>
+                    <span class="ac-sub">面向 B 端服务商。本页的服务商经营案例（义乌 / 服饰产业带篇）出自这个号。</span>
+                    <span class="ac-color">主色 青绿 #00AF96 · 辅色 白 #FFFFFF · 底 渐变</span>
+                </div>
+                <div class="acct-cell a-green">
+                    <span class="ac-name">微信支付</span>
+                    <span class="ac-sub">与上面两个号并行的一条线，产出封面与周边物料。</span>
+                    <span class="ac-color">物料主色 绿（取自素材）</span>
+                </div>
+            </div>
+
+<!-- ================= Part 01：封面产出 ================= -->
+            <div class="part" id="w1">
+                <div class="part-head">
+                    <div class="part-num">01</div>
+                    <div class="part-title-wrap">
+                        <div class="part-title">封面产出 · 日常</div>
+                        <div class="part-rule"></div>
+                    </div>
+                </div>
+                  <p class="part-lead">
+                      <b>微信小店带货者助手</b>已发出的日常封面。每一条都对应一次具体的平台动作：功能上新、大促报名、激励活动。
+                      统一用<b>左文右图</b>的横向版式，保证翻到账号列表时一眼认得出是同一个号。
+                  </p>
+
+                  <div class="cover-wall cols-3">
+                      <div>
+                          <div class="cover-frame auto">
+                              <img src="image/wx/head-tuijianyu.jpg" alt="达人好物·写句推荐语">
+                          </div>
+                          <div class="cap"><b>达人好物推荐</b>以「写句推荐语」为钩子，引导带货者参与内容表达。</div>
+                      </div>
+                      <div>
+                          <div class="cover-frame auto">
+                              <img src="image/wx/head-siyu.jpg" alt="私域拉新成长卡">
+                          </div>
+                          <div class="cap"><b>私域拉新激励</b>用「最高 15 倍成长卡」把权益量级直接写进标题。</div>
+                      </div>
+                      <div>
+                          <div class="cover-frame auto">
+                              <img src="image/wx/head-1111d.jpg" alt="11.11 大促开始报名">
+                          </div>
+                          <div class="cap"><b>11.11 大促</b>主文案压时间节点，「玩法再加码」作为副钩子挂在下方。</div>
+                      </div>
+                      <div>
+                          <div class="cover-frame auto">
+                              <img src="image/wx/head-jinqiu-orange.jpg" alt="金秋大促 平台大促">
+                          </div>
+                          <div class="cap"><b>金秋大促 · 橙底</b>权益类内容用橙色实底，标题反白，权重最高。</div>
+                      </div>
+                      <div>
+                          <div class="cover-frame auto">
+                              <img src="image/wx/head-jinqiu-white.jpg" alt="金秋大促 报名开启">
+                          </div>
+                          <div class="cap"><b>金秋大促 · 白底</b>同主题换底色区分动作，报名类用白底橙字。</div>
+                      </div>
+                      <div>
+                          <div class="cover-frame auto">
+                              <img src="image/wx/head-jinqiu-vip.jpg" alt="粉丝专属福利待领取">
+                          </div>
+                          <div class="cap"><b>粉丝专属福利</b>改版模板，只换文案与图形，版式沿用原有 SOP。</div>
+                      </div>
+                      <div>
+                          <div class="cover-frame auto">
+                              <img src="image/wx/head-baiwan.jpg" alt="百万带货者成长计划">
+                          </div>
+                          <div class="cap"><b>百万成长计划</b>成长类内容唯一一张插画封面，情绪向表达。</div>
+                      </div>
+                      <div>
+                          <div class="cover-frame auto">
+                              <img src="image/wx/head-jinjiang.jpg" alt="商品讲解录制功能上线">
+                          </div>
+                          <div class="cap"><b>看功能 · 讲解录制</b>功能上新统一走左文右图，副标题写清对带货者的直接收益。</div>
+                      </div>
+                      <div>
+                          <div class="cover-frame auto">
+                              <img src="image/wx/head-changliaohui.jpg" alt="微信小店畅聊会">
+                          </div>
+                          <div class="cap"><b>畅聊会 · 品牌专场</b>活动类封面，主体字与副标分层，右侧小封面露出品牌名。</div>
+                      </div>
+                  </div>
+            </div>
+
+<!-- ================= Part 02：封面版式 · 双图拆解 ================= -->
+            <div class="part" id="w2">
+                <div class="part-head">
+                    <div class="part-num">02</div>
+                    <div class="part-title-wrap">
+                        <div class="part-title">封面版式 · 双图结构</div>
+                        <div class="part-rule"></div>
+                    </div>
+                </div>
+                <p class="part-lead">
+                      上面这些封面看着只是「一张横图」，其实每一条都由<b>两张图</b>组成。
+                      这是我在定版式时反复改过的地方，也是整套视觉里最容易被忽略的一条规则。
+                      <b>两个官方账号共用这一套结构</b>，只是配色各走一套。
+                  </p>
+
+                  <div class="duo-anat">
+                      <div class="da-cap">以「商品讲解录制」一条为例 · 左为大封面 · 右为小封面 · 大小比例由 135 编辑器的版面决定</div>
+                      <div class="da-body">
+                          <img src="image/wx/xlsx/image38.png" alt="头条封面与小封面的双图结构">
+                          <div class="da-zones">
+                              <div class="da-zone"><span>大封面</span></div>
+                              <div class="da-zone"><span>小封面</span></div>
+                          </div>
+                      </div>
+                      <div class="da-notes">
+                          <div>
+                              <b>大封面</b>
+                              主画面直接演示功能界面，把「这条推文能干什么」放在第一眼。
+                              信息流里靠这张图把读者拦下来。
+                          </div>
+                          <div>
+                              <b>小封面</b>
+                              同一套视觉裁出来的竖版，用于转发与分享场景。
+                              保证内容被转出去时仍然认得出是同一个号。
+                          </div>
+                      </div>
+                  </div>
+            </div>
+
+<!-- ================= Part 03：标题条墙 ================= -->
+            <div class="part" id="w3">
+                <div class="part-head">
+                    <div class="part-num">03</div>
+                    <div class="part-title-wrap">
+                        <div class="part-title">标题条 · 一二级分段</div>
+                        <div class="part-rule"></div>
+                    </div>
+                </div>
+                <p class="part-lead">
+                    标题条是推文内的一、二级标题，起分段作用。规则是<b>简单加小元素，不做重设计</b>。
+                    <b id="ttlCount">24</b> 条标题条分四行横向循环，一三行向左、二四行向右，鼠标移上去会停。点击查看大图。
+                </p>
+
+                <div class="ttl-wall" id="ttlWall"></div>
+            </div>
+
+<!-- ================= Part 04：栏目视觉体系 ================= -->
+            <div class="part" id="w4">
+                <div class="part-head">
+                    <div class="part-num">04</div>
+                    <div class="part-title-wrap">
+                        <div class="part-title">栏目视觉体系</div>
+                        <div class="part-rule"></div>
+                    </div>
+                </div>
+                <p class="part-lead">
+                      封面和标题条长什么样，取决于栏目先被怎么定。
+                      每个栏目先定下<b>色系和视觉关键词</b>，再落到具体版式。
+                      这条业务线的主色只有<b>橙和白</b>，靠明度与用量的差别区分栏目权重。
+                  </p>
+
+                  <div class="col-table-wrap">
+                      <table class="col-table">
+                          <thead>
+                              <tr>
+                                  <th>栏目</th>
+                                  <th>栏目内容</th>
+                                  <th>视觉关键词</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td>看功能<span class="swatch"><i style="background:#ffffff"></i><i style="background:#FF6146"></i></span></td>
+                                  <td>介绍平台最新的带货功能</td>
+                                  <td>微信感、简约、短、干货</td>
+                              </tr>
+                              <tr>
+                                  <td>看规则<span class="swatch"><i style="background:#ffffff"></i><i style="background:#FF6146"></i></span></td>
+                                  <td>解读平台的重要规则</td>
+                                  <td>权威、清晰、可查</td>
+                              </tr>
+                              <tr>
+                                  <td>看案例<span class="swatch"><i style="background:#ffffff"></i><i style="background:#FF6146"></i></span></td>
+                                  <td>在微信小店带货的真实故事</td>
+                                  <td>人文感、真实</td>
+                              </tr>
+                              <tr>
+                                  <td>看激励<span class="swatch solid"><i style="background:#FF6146"></i></span></td>
+                                  <td>权益与激励活动的信息发布</td>
+                                  <td>权益感、直接</td>
+                              </tr>
+                              <tr>
+                                  <td>联盟商品快报<span class="swatch"><i style="background:#ffffff"></i><i style="background:#FF6146"></i></span></td>
+                                  <td>优选联盟热卖商品的趋势洞察</td>
+                                  <td>榜单、爆品、即时性</td>
+                              </tr>
+                              <tr>
+                                  <td>百万成长计划<span class="swatch solid"><i style="background:#FF6146"></i></span></td>
+                                  <td>帮助新人快速出单、成长</td>
+                                  <td>成长、温暖、向上</td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+                  <p class="col-table-note">
+                      整条线的配色只有橙与白：日常栏目用白底橙边，权益类栏目用橙色实底，靠用量区分权重。
+                  </p>
+            </div>
+
+<!-- ================= Part 05：其他内容产出 ================= -->
+            <div class="part" id="w5">
+                <div class="part-head">
+                    <div class="part-num">05</div>
+                    <div class="part-title-wrap">
+                        <div class="part-title">其他内容产出</div>
+                        <div class="part-rule"></div>
+                    </div>
+                </div>
+                <p class="part-lead">
+                      封面与标题条之外，还有三块成组产出。它们分属<b>两个官方账号和一条并行线</b>，
+                      形式差别来自各自的读者不同，不是同一套东西的两种摆法。
+                </p>
+
+                <div class="out-cols">
+                    <!-- 左 50%：带货者助手 -->
+                    <div class="out-col">
+                        <span class="ob-tag">微信小店带货者助手</span>
+                        <h4 class="ob-title">小绿书 · 带货者 Q&amp;A</h4>
+                        <p class="ob-desc">
+                            问答形式的长图，把活动规则、报名路径与玩法拆成六个问题逐个讲清。
+                            这是改版后<b>唯一已上线</b>的一批，橙色作为唯一强调色贯穿全篇。
+                            六张按牌面叠放，当前这张在最前，切一张就把最前那张压回末尾。
+                        </p>
+                        <div class="qa-deck" id="qaDeck">
+                            <div class="qd-view">
+                                <button class="qd-nav prev" data-dir="-1" type="button" aria-label="上一张">&#8249;</button>
+                                <div class="qd-stage" id="qaStage"></div>
+                                <button class="qd-nav next" data-dir="1" type="button" aria-label="下一张">&#8250;</button>
+                            </div>
+                            <div class="qd-foot">
+                                <div class="qd-meta">
+                                    <div class="qd-title" id="qaTitle">活动内容简述</div>
+                                    <div class="qd-desc" id="qaDesc">先把这轮活动讲什么、什么时候开始说清楚。</div>
+                                </div>
+                                <div class="qd-count"><b id="qaNum">01</b> / 06</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右 50%：服务商（上）+ 微信支付（下） -->
+                    <div class="out-col">
+                        <div class="out-sub">
+                            <span class="ob-tag">微信小店服务商助手</span>
+                            <h4 class="ob-title">服务商经营案例</h4>
+                            <p class="ob-desc">
+                                面向服务商的故事型内容，按产业带分篇。
+                                每篇两张图：<b>大封面</b>在信息流里把人拦下来，<b>小封面</b>用于转发分享。
+                                青绿主色，与带货者助手的橙白拉开距离，一眼能分出是哪个号。
+                            </p>
+                            <div class="pay-mosaic">
+                                <div class="pm-tile pm-head" onclick="openLb('image/wx/pay/yiwu-head.jpg')"><img src="image/wx/pay/yiwu-head.jpg" alt="义乌产业带 · 大封面"><span>义乌 · 大封面</span></div>
+                                <div class="pm-tile pm-sq" onclick="openLb('image/wx/pay/yiwu-small.jpg')"><img src="image/wx/pay/yiwu-small.jpg" alt="义乌产业带 · 小封面"><span>义乌 · 小封面</span></div>
+                                <div class="pm-tile pm-head" onclick="openLb('image/wx/pay/fashion-head.jpg')"><img src="image/wx/pay/fashion-head.jpg" alt="服饰产业带 · 大封面"><span>服饰 · 大封面</span></div>
+                                <div class="pm-tile pm-sq" onclick="openLb('image/wx/pay/fashion-small.jpg')"><img src="image/wx/pay/fashion-small.jpg" alt="服饰产业带 · 小封面"><span>服饰 · 小封面</span></div>
+                            </div>
+                        </div>
+
+                        <div class="out-sub">
+                            <span class="ob-tag">微信支付</span>
+                            <h4 class="ob-title">封面与线下物料</h4>
+                            <p class="ob-desc">
+                                和上面两个号并行的另一条线，产出封面素材与一套线下周边物料。
+                            </p>
+                            <div class="pay-mosaic">
+                                <div class="pm-tile pm-head" onclick="openLb('image/wx/pay/korea-head.jpg')"><img src="image/wx/pay/korea-head.jpg" alt="KOREA · 大封面"><span>KOREA · 大封面</span></div>
+                                <div class="pm-tile pm-sq" onclick="openLb('image/wx/pay/korea-small.jpg')"><img src="image/wx/pay/korea-small.jpg" alt="KOREA · 小封面"><span>KOREA · 小封面</span></div>
+                                <div class="pm-tile pm-sq" onclick="openLb('image/wx/pay/umbrella.jpg')"><img src="image/wx/pay/umbrella.jpg" alt="TenPayGo 雨伞"><span>TenPayGo 雨伞</span></div>
+                                <div class="pm-note">
+                                    <h5>TenPayGo 雨伞</h5>
+                                    <p>
+                                        伞面文案是 <b>Easy Pay with TenPayGo · 畅行中国</b>，配深圳口岸标识，
+                                        是这条线上的一套线下周边物料。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= 署名 ================= -->
+            <div class="page-credit">
+    <div class="credit-inline">
+                        栏目视觉方向由本人主导（约 85% 由本人决定），设计老师负责复现与具象化；栏目标题文案由本人设计；服务商经营案例配图由本人使用 AI 生成。项目整体为团队协作产出。
+                    </div>
+            </div>
+
+</div><!-- /pane 1 -->
+
+        </div><!-- /pane-viewport -->
+    </div><!-- /content -->
+</div><!-- /layout -->
+
+<!-- ================= 灯箱 ================= -->
+<div class="lightbox" id="lightbox" onclick="closeLb(event)">
+    <button class="lb-close" onclick="closeLb(event, true)">×</button>
+    <img id="lb-img" src="" alt="大图">
+    <div class="lb-hint">点击空白处或右上角关闭 · 按 Esc 退出</div>
+</div>
+
+<script>
+    // ================= 灯箱 =================
+    function openLb(src) {
+        var img = document.getElementById('lb-img');
+        img.src = src;
+        document.getElementById('lightbox').classList.add('on');
+        document.body.style.overflow = 'hidden';
+        // 长图单独处理宽度
+        img.style.maxWidth = src.indexOf('long_') > -1 ? '760px' : '880px';
+    }
+    function closeLb(e, force) {
+        if (force || (e && e.target.id === 'lightbox')) {
+            document.getElementById('lightbox').classList.remove('on');
+            document.body.style.overflow = '';
+        }
+    }
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLb(null, true); });
+
+    // ================= 数据 =================
+    var days = [
+        {
+            day: '倒数第 3 天',
+            h: '开放 · 无边界',
+            kw: '「让 Agent，无边界」',
+            p: 'WorkBuddy 双臂展开向前遨游，身下地板随双手方向逐节点亮边界，地板上铺开技能、专家、连接器、灵感案例等生态元素。',
+            f: '故事线：用户 × 开放 × 效率',
+            imgs: ['image/wb/d3_v1.jpg', 'image/wb/d3_v2.jpg', 'image/wb/d3_fin.jpg'],
+            caps: ['初稿 · 元素以扁平薄荷绿色块呈现，信息较满，机器人动作张力被背景压住。',
+                   '修改 · 元素改为高饱和彩色玻璃质感，辨识度提升，但色彩与主体争夺注意力。',
+                   '定稿 · 色彩收回低饱和薄荷与淡紫，材质统一为半透明玻璃，机器人成为唯一焦点。']
+        },
+        {
+            day: '倒数第 2 天',
+            h: '连接 · 不断线',
+            kw: '「让任务，不断线」',
+            p: 'WorkBuddy 居于中心发光底座，与各硬件伙伴构成向外的辐射结构。录音卡片、AI 眼镜等硬件以透明质感环绕排列。',
+            f: '故事线：伙伴 × 连接 × 增长',
+            imgs: ['image/wb/d2_v1.jpg', 'image/wb/d2_v2.jpg', 'image/wb/d2_fin.jpg'],
+            caps: ['初稿 · 硬件元素平铺环绕，方向感偏散；底座发光不足，中心结构不够突出。',
+                   '修改 · 底座光圈加强，中心结构开始显现；硬件按方位重排，色彩过渡更统一。',
+                   '定稿 · 底座向四周延伸出电路纹理，形成明确辐射结构；硬件统一为透明玻璃。']
+        },
+        {
+            day: '倒数第 1 天',
+            h: '共创 · Build Together',
+            kw: '「新生态，Build Together」',
+            p: 'WorkBuddy 与各软件伙伴共同搭建积木，积木中心升起一束光，光的核心是 AgentOS 字样，表达共建生态底座。',
+            f: '故事线：共创 × 未来 × AgentOS',
+            imgs: ['image/wb/d1_v1.jpg', 'image/wb/d1_v2.jpg', 'image/wb/d1_fin.jpg'],
+            caps: ['初稿 · 积木结构成立，但中心光束不明显，AgentOS 仅作为水印存在，核心信息被弱化。',
+                   '修改 · 光束自上而下打亮积木，AgentOS 立体字进入画面中心；伙伴角色统一为白色小精灵。',
+                   '定稿 · AgentOS 以立体字立于结构核心，成为明确的视觉落点，整体层次与前三张统一。']
+        }
+    ];
+
+    var dayIdx = 0;
+    var slideIdx = 0;
+    var stage = document.getElementById('stage');
+    var dots = document.getElementById('dots');
+
+    // 构建轮播 DOM
+    function buildSlides() {
+        var d = days[dayIdx];
+        stage.innerHTML = '';
+        dots.innerHTML = '';
+        d.imgs.forEach(function (src, i) {
+            var div = document.createElement('div');
+            div.className = 'slide';
+            div.innerHTML = '<img src="' + src + '" class="zoomable">';
+            div.onclick = function () {
+                if (i === slideIdx) { openLb(src); }
+                else { slideIdx = i; render(); }
+            };
+            stage.appendChild(div);
+
+            var dot = document.createElement('div');
+            dot.className = 'dot';
+            dot.onclick = function () { slideIdx = i; render(); };
+            dots.appendChild(dot);
+        });
+        slideIdx = 0;
+        render();
+    }
+
+    // 计算每个 slide 的位置：中前 / 左后 / 右后
+    function render() {
+        var slides = stage.querySelectorAll('.slide');
+        var n = slides.length;
+        slides.forEach(function (el, i) {
+            el.className = 'slide';
+            var rel = (i - slideIdx + n) % n;   // 0=当前
+            if (rel === 0) el.classList.add('pos-c');
+            else if (rel === 1) el.classList.add('pos-r');
+            else el.classList.add('pos-l');
+        });
+        // 点
+        var ds = dots.querySelectorAll('.dot');
+        ds.forEach(function (el, i) { el.className = i === slideIdx ? 'dot on' : 'dot'; });
+        // 文案
+        document.getElementById('cap').innerHTML =
+            '<b>' + ['初稿', '修改', '定稿'][slideIdx] + '</b>　' + days[dayIdx].caps[slideIdx];
+    }
+
+    function nextSlide() { slideIdx = (slideIdx + 1) % 3; render(); }
+    function prevSlide() { slideIdx = (slideIdx + 2) % 3; render(); }
+
+    function goDay(idx, btn) {
+        dayIdx = idx;
+        document.querySelectorAll('.day-btn').forEach(function (b) { b.classList.remove('on'); });
+        btn.classList.add('on');
+        var d = days[idx];
+        document.getElementById('s-day').innerText = d.day;
+        document.getElementById('s-h').innerText = d.h;
+        document.getElementById('s-kw').innerText = d.kw;
+        document.getElementById('s-p').innerText = d.p;
+        document.getElementById('s-f').innerText = d.f;
+        buildSlides();
+    }
+
+    // ================= Part 05：长图迭代切换 =================
+    var iters = [
+        {
+            num: '01', name: '初稿', img: 'image/wb/long_draft.jpg',
+            stage: 'Stage 01 / 初稿',
+            h: '蓝底方案',
+            p: '先把发布会信息全部铺进去，信息齐但层级偏重，作为与客户沟通的起点。',
+            points: ['蓝色底，与后续浅色 KV 基调不同', '信息一次铺满，未做层级取舍', '用于向客户对齐内容范围']
+        },
+        {
+            num: '02', name: '框架 ①', img: 'image/wb/long_frame1.jpg',
+            stage: 'Stage 02 / 框架 ①',
+            h: '与客户对齐结构',
+            p: '以灰稿确定标题区、底座、三大服务卡位与伙伴墙的位置关系。',
+            points: ['去色处理，只谈结构不谈视觉', '确定五段式纵向排布', '为后续填充定下版式骨架']
+        },
+        {
+            num: '03', name: '框架 ②', img: 'image/wb/long_frame2.jpg',
+            stage: 'Stage 03 / 框架 ②',
+            h: '细化信息模块',
+            p: '在框架一基础上细化信息模块，确定最终采用的版式结构。',
+            points: ['补齐各模块的卡片结构', '确定伙伴墙的排布方式', '结构定稿，进入视觉阶段']
+        },
+        {
+            num: '04', name: '修改 1', img: 'image/wb/long_m1.jpg',
+            stage: 'Stage 04 / 修改 1',
+            h: '进入视觉填充',
+            p: '按框架上色排版，逐层补齐卡片与图文。',
+            points: ['套用发布会浅色 KV 的配色', '逐个模块上色与排版', '图文内容逐层补齐']
+        },
+        {
+            num: '05', name: '修改 2', img: 'image/wb/long_m2.jpg',
+            stage: 'Stage 05 / 修改 2',
+            h: '细化色彩与间距',
+            p: '细化色彩与间距，统一各信息层的卡片样式，为定稿调整细节。',
+            points: ['统一各信息层卡片样式', '调整色彩与留白节奏', '修正细节，逼近定稿']
+        },
+        {
+            num: '06', name: '白底定稿', img: 'image/wb/long_fin.jpg',
+            stage: 'Final / 白底定稿',
+            h: '回归浅色，与主视觉统一',
+            p: '最终定稿回到浅色底，与发布会主视觉基调统一。五个信息层用统一卡片与色彩区分，避免长图读成一片。',
+            points: ['浅色底，与发布会 KV 一致', '五层信息用统一卡片区隔', '输出 4600 × 14923 px 存档']
+        }
+    ];
+
+    var iterTabs = document.getElementById('iterTabs');
+    var iterStage = document.getElementById('iterStage');
+    var iterNote = document.getElementById('iterNote');
+    var iterIdx = 0;
+
+    function buildIter() {
+        // tabs
+        iterTabs.innerHTML = '';
+        iters.forEach(function (it, i) {
+            var b = document.createElement('button');
+            b.className = 'iter-tab' + (i === 0 ? ' on' : '');
+            b.innerHTML = '<span class="t-num">' + it.num + '</span>' + it.name;
+            b.onclick = function () { goIter(i); };
+            iterTabs.appendChild(b);
+        });
+        // slides（全部叠放，靠 .on 切换 → 覆盖式）
+        iterStage.innerHTML = '';
+        // 图区：只让「当前版」占位撑高，其余版绝对定位叠在上层做淡出
+        iterStage.innerHTML = '';
+        var view = document.createElement('div');
+        view.className = 'iter-view';
+        iters.forEach(function (it, i) {
+            var d = document.createElement('div');
+            d.className = 'iter-slide' + (i === 0 ? ' on' : '');
+            d.innerHTML =
+                '<span class="iter-badge">' + it.num + ' · ' + it.name + '</span>' +
+                '<img src="' + it.img + '" alt="' + it.name + '">';
+            view.appendChild(d);
+        });
+        iterStage.appendChild(view);
+
+        // 「查看完整长图」按钮：并入图底，始终贴着图片下沿
+        var zoom = document.createElement('div');
+        zoom.className = 'iter-zoom';
+        zoom.innerHTML =
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+            'stroke-linecap="round" stroke-linejoin="round">' +
+            '<circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path>' +
+            '<path d="M11 8v6M8 11h6"></path></svg>点击查看完整长图';
+        iterStage.appendChild(zoom);
+        iterStage.onclick = function () { openLb(iters[iterIdx].img); };
+
+        renderIter();
+    }
+
+    function renderIter() {
+        var slides = iterStage.querySelectorAll('.iter-slide');
+        slides.forEach(function (el, i) { el.classList.toggle('on', i === iterIdx); });
+        var tabs = iterTabs.querySelectorAll('.iter-tab');
+        tabs.forEach(function (el, i) { el.classList.toggle('on', i === iterIdx); });
+
+        var it = iters[iterIdx];
+        var pts = it.points.map(function (t) {
+            return '<div class="n-point"><span class="dot-m">—</span><span>' + t + '</span></div>';
+        }).join('');
+        iterNote.innerHTML =
+            '<div class="n-stage">' + it.stage + '</div>' +
+            '<h4>' + it.h + '</h4>' +
+            '<p>' + it.p + '</p>' +
+            pts;
+    }
+
+    function goIter(i) { iterIdx = i; renderIter(); }
+
+    // 键盘左右切换（不干扰灯箱）
+    document.addEventListener('keydown', function (e) {
+        if (document.getElementById('lightbox').classList.contains('on')) return;
+        if (e.key === 'ArrowLeft') prevSlide();
+        if (e.key === 'ArrowRight') nextSlide();
+    });
+
+    // 初始化
+    buildSlides();
+    buildIter();
+
+    // ================= 项目切换：手风琴 + 页内横向滑动（不跳页、不白屏） =================
+    var panes    = Array.prototype.slice.call(document.querySelectorAll('.pane'));
+    var projItems = Array.prototype.slice.call(document.querySelectorAll('.proj-item'));
+    var curPane = 0;
+
+    // 每个项目的章节配置
+    var chapterData = [
+        [
+            { id: 'p1', name: '01 · 主视觉与产出' },
+            { id: 'p2', name: '02 · 创意来源' },
+            { id: 'p3', name: '03 · 故事线与迭代' },
+            { id: 'p4', name: '04 · 品牌方模版' },
+            { id: 'p5', name: '05 · 长图迭代' }
+        ],
+        [
+            { id: 'w1', name: '01 · 封面产出' },
+            { id: 'w2', name: '02 · 封面版式结构' },
+            { id: 'w3', name: '03 · 标题条' },
+            { id: 'w4', name: '04 · 栏目视觉体系' },
+            { id: 'w5', name: '05 · 其他内容产出' }
+        ]
+    ];
+
+    // 一次性把每个抽屉的章节列表渲染好（之后只切 active，不重建 DOM）
+    function buildAllDrawers() {
+        projItems.forEach(function (item, pi) {
+            var ul = item.querySelector('.proj-drawer ul');
+            ul.innerHTML = chapterData[pi].map(function (c) {
+                return '<li><a href="#' + c.id + '" class="nav-link" data-pid="' + pi + '">' + c.name + '</a></li>';
+            }).join('');
+        });
+    }
+
+    // 当前项目的高亮 + 章节滚动高亮
+    function highlight() {
+        var pane = panes[curPane];
+        var parts = pane.querySelectorAll('.part');
+        var cur = '';
+        // 用 rect 换算成文档坐标：pane 本身是 absolute，offsetTop 不等于文档位置
+        parts.forEach(function (p) {
+            var top = p.getBoundingClientRect().top + window.scrollY;
+            if (window.scrollY >= top - 130) cur = p.id;
+        });
+        projItems.forEach(function (item, pi) {
+            item.querySelectorAll('.nav-link').forEach(function (a) {
+                a.classList.toggle('active', pi === curPane && a.getAttribute('href') === '#' + cur);
+            });
+        });
+    }
+
+    // 每次切换的记录：动画时长（与 CSS .pane transition 的 0.92s 保持一致）
+    var ANIM_MS = 920;
+    var animTimer = null;
+
+    function goPane(pi) {
+        // 已在目标页就直接返回；不再用锁，避免「点太快/隔一会儿点」被吞掉
+        if (pi === curPane) return;
+
+        var from = panes[curPane];
+        var to = panes[pi];
+
+        // 方向：向后翻 → 新页从右侧进入
+        var fwd = pi > curPane;
+        var offClass = fwd ? 'off-left' : 'off-right';
+        var enterClass = fwd ? 'enter-right' : 'enter-left';
+
+        // 有动画正在跑：先把上一轮的残留状态一次性清干净
+        if (animTimer) { clearTimeout(animTimer); animTimer = null; }
+        panes.forEach(function (p) {
+            p.classList.remove('off-left', 'off-right', 'enter-left', 'enter-right', 'moving');
+        });
+
+        // 目标页：移到入场位（此时被 .pane:not(.on) 隐藏，不参与渲染）
+        to.classList.add(enterClass);
+
+        // 双帧 rAF：确保入场位先被浏览器真正应用到样式，过渡才会触发
+        requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+                to.classList.add('on', 'moving');
+                to.classList.remove(enterClass);
+                from.classList.remove('on');
+                from.classList.add(offClass);
+            });
+        });
+
+        curPane = pi;
+        // 手风琴：当前项展开，其他收起
+        projItems.forEach(function (item, i) {
+            item.classList.toggle('active', i === pi);
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        animTimer = setTimeout(function () {
+            panes.forEach(function (p) {
+                p.classList.remove('off-left', 'off-right', 'enter-left', 'enter-right', 'moving');
+            });
+            animTimer = null;
+            highlight();
+        }, ANIM_MS + 40);
+    }
+
+    // 点头部：不是当前项 → 切过去并展开；是当前项 → 不收起（导航里始终有内容）
+    projItems.forEach(function (item, i) {
+        var head = item.querySelector('.pi-head');
+        head.addEventListener('click', function () { goPane(i); });
+        head.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goPane(i); }
+        });
+    });
+
+    // 章节链接：平滑滚动 + 高亮
+    document.querySelectorAll('.proj-drawer .nav-link').forEach(function (a) {
+        a.addEventListener('click', function (e) {
+            e.preventDefault();
+            var id = a.getAttribute('href').slice(1);
+            var el = document.getElementById(id);
+            if (!el) return;
+            var y = el.getBoundingClientRect().top + window.scrollY - 20;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+        });
+    });
+
+    // ================= 导航高亮（只针对当前 pane） =================
+    window.addEventListener('scroll', highlight);
+    window.addEventListener('load', highlight);
+
+    // ================= 第二页 · 标题条墙：四行横向循环（奇偶行反向）=================
+    // 用到的素材是同一批标题条的不同样式稿，按行错开，避免同一句话挨在一起。
+    var ttlRows = [
+        ['image/wx/xlsx/image60.jpg', 'image/wx/xlsx/image63.jpg', 'image/wx/xlsx/image72.jpg',
+         'image/wx/xlsx/image74.png', 'image/wx/xlsx/image83.png', 'image/wx/xlsx/image76.jpg'],
+        ['image/wx/xlsx/ttl-dachang-zhibo.jpg', 'image/wx/xlsx/ttl-standard-orange.jpg', 'image/wx/xlsx/image75.png',
+         'image/wx/xlsx/image85.jpg', 'image/wx/xlsx/image86.jpg', 'image/wx/xlsx/image77.jpg'],
+        ['image/wx/xlsx/image61.jpg', 'image/wx/xlsx/image87.jpg', 'image/wx/xlsx/image88.jpg',
+         'image/wx/xlsx/image89.jpg', 'image/wx/xlsx/image90.jpg', 'image/wx/ttl-06.jpg'],
+        ['image/wx/xlsx/image66.jpg', 'image/wx/xlsx/image91.jpg', 'image/wx/xlsx/image92.jpg',
+         'image/wx/xlsx/image93.jpg', 'image/wx/ttl-09.jpg', 'image/wx/xlsx/ttl-mjh-growth.jpg']
+    ];
+    (function () {
+        var wall = document.getElementById('ttlWall');
+        if (!wall) return;
+        var total = 0;
+        var imgs = [];
+
+        ttlRows.forEach(function (row, ri) {
+            var el = document.createElement('div');
+            el.className = 'ttl-row' + (ri % 2 ? ' rev' : '');   // 0/2 行向左，1/3 行向右
+            var track = document.createElement('div');
+            track.className = 'tr-track';
+            // 复制两份：位移 -50% 正好走完一份，接缝无感
+            row.concat(row).forEach(function (src) {
+                var it = document.createElement('div');
+                it.className = 'tr-item';
+                var im = document.createElement('img');
+                im.src = src;
+                im.alt = '';
+                im.onload = scheduleFit;
+                it.appendChild(im);
+                it.onclick = function () { openLb(src); };
+                track.appendChild(it);
+                imgs.push(im);
+            });
+            el.appendChild(track);
+            wall.appendChild(el);
+            total += row.length;
+        });
+        var elCount = document.getElementById('ttlCount');
+        if (elCount) elCount.textContent = total;
+
+        // 按内容宽度算时长，保持各行线速度接近；图加载完后复算
+        function fit() {
+            wall.querySelectorAll('.ttl-row').forEach(function (row, i) {
+                var track = row.firstChild;
+                if (!track || !track.scrollWidth) return;
+                var half = track.scrollWidth / 2;              // 一份内容的宽度
+                var speed = 52 + (i % 2) * 6;                  // px/s，四行略有差异
+                row.style.setProperty('--dur', Math.max(16, half / speed).toFixed(1) + 's');
+            });
+        }
+        var fitTimer = null;
+        function scheduleFit() {
+            if (fitTimer) clearTimeout(fitTimer);
+            fitTimer = setTimeout(fit, 120);
+        }
+        fit();
+        window.addEventListener('resize', scheduleFit);
+        window.addEventListener('load', fit);
+    })();
+
+    // ================= 第二页 · 小绿书：扑克牌式叠放（左右切换）=================
+    var qaData = [
+        { t: '活动内容简述', d: '先把这轮活动讲什么、什么时候开始说清楚。', img: 'image/wx/lvshu/lvshu-1.jpg' },
+        { t: '带货者报名指引', d: '从入口到提交，一步步走通报名的完整路径。', img: 'image/wx/lvshu/lvshu-2.jpg' },
+        { t: '大场直播玩法', d: '讲清大场直播的参与方式与节奏安排。', img: 'image/wx/lvshu/lvshu-3.jpg' },
+        { t: '主播分享券玩法', d: '分享券怎么拿、怎么用，讲透这一条激励链路。', img: 'image/wx/lvshu/lvshu-4.jpg' },
+        { t: '高光片段与内容要求', d: '明确内容赛道的标准，以及可提交的形式。', img: 'image/wx/lvshu/lvshu-5.jpg' },
+        { t: '其他常见问题', d: '把剩下的疑问集中收口，减少反复咨询。', img: 'image/wx/lvshu/lvshu-6.jpg' }
+    ];
+    (function () {
+        var root = document.getElementById('qaDeck');
+        if (!root) return;
+        var stage = document.getElementById('qaStage');
+        var elT = document.getElementById('qaTitle');
+        var elD = document.getElementById('qaDesc');
+        var elN = document.getElementById('qaNum');
+        var total = qaData.length;
+        var idx = 0;
+
+        // 建牌：rel=0 在最前，rel 越大越靠右越靠后
+        var cards = qaData.map(function (it, i) {
+            var d = document.createElement('div');
+            d.className = 'qd-card';
+            d.innerHTML = '<img src="' + it.img + '" alt="' + it.t + '">';
+            d.addEventListener('click', function () {
+                var rel = (i - idx + total) % total;
+                if (rel === 0) { openLb(it.img); }   // 点最前那张 = 看大图
+                else { go(idx + rel); }              // 点后面的牌 = 把它提到最前
+            });
+            stage.appendChild(d);
+            return d;
+        });
+
+        // 错位量 = 卡片实际宽度的 14%（紧 30%），跟着栏宽自适应
+        function step() {
+            var w = cards[0] ? cards[0].offsetWidth : 0;
+            return w ? w * 0.14 : 40;
+        }
+
+        function render() {
+            var st = step();
+            cards.forEach(function (el, i) {
+                var rel = (i - idx + total) % total;
+                el.style.zIndex = String(100 - rel);
+                el.style.transform = 'translateX(' + (rel * st) + 'px) scale(' + (1 - rel * 0.012).toFixed(3) + ')';
+                el.classList.toggle('front', rel === 0);
+            });
+            elT.textContent = qaData[idx].t;
+            elD.textContent = qaData[idx].d;
+            elN.textContent = ('0' + (idx + 1)).slice(-2);
+        }
+        function go(n) { idx = ((n % total) + total) % total; render(); }
+
+        root.querySelectorAll('.qd-nav').forEach(function (b) {
+            b.addEventListener('click', function () { go(idx + parseInt(b.dataset.dir, 10)); });
+        });
+        document.addEventListener('keydown', function (e) {
+            var r = root.getBoundingClientRect();
+            if (r.bottom < 0 || r.top > window.innerHeight) return;
+            if (e.key === 'ArrowLeft') { go(idx - 1); }
+            else if (e.key === 'ArrowRight') { go(idx + 1); }
+        });
+        render();
+    })();
+
+    // 初始化
+    buildAllDrawers();
+    highlight();
+</script>
+
+</body>
+</html>

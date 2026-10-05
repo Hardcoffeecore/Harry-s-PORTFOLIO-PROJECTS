@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>胡沛荣 | Harry Hu - 个人作品集</title>
-    <!-- 引入 Chart.js 轻量级图表库 -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- 首页未使用图表，去掉原 jsdelivr CDN 依赖（该 CDN 不可达时会拖慢首屏） -->
     <style>
         /* ================= 基础重置与暗黑主题 ================= */
         * {
@@ -15,6 +14,8 @@
         }
         html {
             scroll-behavior: smooth; /* 平滑滚动跳转 */
+            /* 整体缩到 80%：等价于浏览器缩放 80%，排版不变 */
+            zoom: 0.8;
         }
         body {
             background-color: #0d0d0d;
@@ -50,7 +51,7 @@
 
         /* ================= 首屏：LOEWE 风格时装海报排版 ================= */
         #hero-section {
-            height: 100vh;
+            height: calc(100vh / 0.8);
             width: 100%;
             position: relative;
             display: flex;
@@ -67,7 +68,7 @@
             pointer-events: none;
         }
         .hero-name {
-            font-size: clamp(3rem, 10vw, 7rem); /* 响应式超大号字体 */
+            font-size: clamp(3.75rem, 12.5vw, 8.75rem); /* 全站 zoom 0.8，这里 ×1.25 让它实际保持 100% */
             font-weight: 800;
             letter-spacing: -2px;
             line-height: 1.05;
@@ -657,40 +658,48 @@
                 <div class="showcase-left">
                     <span class="showcase-tag">—— HIGHLIGHTS</span>
                     <div class="showcase-left-bottom">
-                        <div class="showcase-date" id="showcase-date">Aug 2025</div>
-                        <h3 class="showcase-title" id="showcase-title">良品铺子 · <br>营销物料与视觉重构</h3>
+                        <div class="showcase-date" id="showcase-date">Sep 2026</div>
+                        <h3 class="showcase-title" id="showcase-title">腾讯 WorkBuddy 生态发布会 · <br>全案创意与内容体系</h3>
                         <p class="showcase-desc" id="showcase-desc">
-                            主导大促微信私域营销物料与视觉重构，深度解构猜谜题库。规划 700w 存量用户精细化分层券包与闭环实施，达成大促核销转化率 21.6%，实现线下触点优化与私域激活。
+                            参与腾讯 WorkBuddy 生态发布会的全流程创意策划：提炼核心传播关键词、发散倒计时海报创意，调研头部品牌发布会案例并输出视觉参考报告，协助确立设计基调；同步搭建微信小店带货者助手官号的内容体系与视觉规范，统筹发布会现场媒体接待与三个视频号账号的直播投流，直播总曝光 150 万+。
                         </p>
-                        <a href="project-bestore.html" class="showcase-see-more" id="showcase-link">SEE MORE</a>
+                        <a href="project-workbuddy.html" class="showcase-see-more" id="showcase-link">SEE MORE</a>
                     </div>
                 </div>
 
                 <!-- 中栏：大图展示 -->
                 <div class="showcase-center">
-                    <img src="image/lppz.png" alt="精选项目展示" class="showcase-img" id="showcase-img">
+                    <img src="image/cover-workbuddy.jpg" alt="腾讯 WorkBuddy 生态发布会" class="showcase-img" id="showcase-img">
                 </div>
 
                 <!-- 右栏：垂直选项卡与高级分组小标题 -->
                 <div class="showcase-right">
                     
-                    <!-- 分组 1: 品牌大案 -->
-                    <div class="showcase-group-title">Brand Campaigns / 商业与品牌策略</div>
-                    
+                    <!-- 分组 0: 内容运营 -->
+                    <div class="showcase-group-title">Integrated Campaign / 发布会全案与内容策划</div>
+
                     <div class="showcase-tab active" onclick="switchProject(0)">
+                        <div class="showcase-tab-tag">WorkBuddy</div>
+                        <div class="showcase-tab-title">生态发布会全案与官号内容体系</div>
+                    </div>
+
+                    <!-- 分组 1: 品牌大案 -->
+                    <div class="showcase-group-title" style="margin-top: 22px;">Brand Campaigns / 商业与品牌策略</div>
+
+                    <div class="showcase-tab" onclick="switchProject(1)">
                         <div class="showcase-tab-tag">良品铺子</div>
                         <div class="showcase-tab-title">节日营销物料与视觉重构</div>
                     </div>
 
-                    <div class="showcase-tab" onclick="switchProject(1)">
+                    <div class="showcase-tab" onclick="switchProject(2)">
                         <div class="showcase-tab-tag">西藏唐卡</div>
                         <div class="showcase-tab-title">短视频变现策略提案</div>
                     </div>
 
                     <!-- 分组 2: 媒体内容 -->
-                    <div class="showcase-group-title" style="margin-top: 25px;">Media Editorial / 新媒体内容撰写与运营</div>
+                    <div class="showcase-group-title" style="margin-top: 22px;">Media Editorial / 新媒体内容撰写与运营</div>
 
-                    <div class="showcase-tab" onclick="switchProject(2)">
+                    <div class="showcase-tab" onclick="switchProject(3)">
                         <div class="showcase-tab-tag">情报姬</div>
                         <div class="showcase-tab-title">二次元深度内容运营</div>
                     </div>
@@ -1030,6 +1039,13 @@
     <script>
         // Y's 风格非对称轮播切换数据
         const projectsData = [
+            {
+                title: "腾讯 WorkBuddy 生态发布会 · <br>全案创意与内容体系",
+                date: "Sep 2026",
+                desc: "参与腾讯 WorkBuddy 生态发布会的全流程创意策划：提炼核心传播关键词、发散倒计时海报创意，调研头部品牌发布会案例并输出视觉参考报告，协助确立设计基调；同步搭建微信小店带货者助手官号的内容体系与视觉规范，统筹发布会现场媒体接待与三个视频号账号的直播投流，直播总曝光 150 万+。",
+                image: "image/cover-workbuddy.jpg",
+                link: "project-workbuddy.html"
+            },
             {
                 title: "良品铺子 · <br>营销物料与视觉重构",
                 date: "Aug 2025",
